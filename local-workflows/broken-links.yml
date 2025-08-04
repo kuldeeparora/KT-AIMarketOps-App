@@ -1,0 +1,62 @@
+name: Check for Broken Links
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 0' # every Sunday at 3am UTC
+
+jobs:
+  extract-urls:
+    runs-on: ubuntu-latest
+    outputs:
+      urls-path: ${{ steps.urls.outputs.urls-path }}
+    steps:
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y curl libxml2-utils
+      - name: Download sitemap and extract all URLs
+        id: urls
+        run: |
+          curl -o sitemap.xml https://kenttraders.myshopify.com/sitemap.xml
+          xmllint --xpath '//*[local-name()="loc"]/text()' sitemap.xml | tr ' ' '\n' > sub-sitemaps.txt
+          (for url in $(cat sub-sitemaps.txt); do
+            curl -s "$url" | xmllint --xpath '//*[local-name()="loc"]/text()' -;
+          done) | tr ' ' '\n' | grep -E '^https?://' | sort -u > all-urls.txt
+          echo "urls-path=all-urls.txt" >> $GITHUB_OUTPUT
+
+  check-links:
+    runs-on: ubuntu-latest
+    needs: extract-urls
+    steps:
+      - name: Download URLs artifact
+        run: |
+          cp ${{ needs.extract-urls.outputs.urls-path }} all-urls.txt
+      - name: Check for broken links on all live pages
+        uses: lycheeverse/lychee-action@v1.9.2
+        with:
+          args: --verbose --no-progress --max-concurrency 5 --exclude-mail --input all-urls.txt
+      - name: Log number of URLs and show sample
+        run: |
+          echo "Total URLs found: $(wc -l < all-urls.txt)"
+          head -20 all-urls.txt
+          if [ ! -s all-urls.txt ]; then
+            echo "No URLs found! Failing the job." >&2
+            exit 1
+          fi
+      - name: Upload all-urls.txt as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-urls
+          path: all-urls.txt
+      - name: Upload lychee broken links report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lychee-report
+          path: lychee/out.md
+        if: always()
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Broken links detected or workflow failed!"
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -X POST -H 'Content-type: application/json' --data '{"text":"[KT] Broken links detected in production site! See GitHub Actions for details."}' $SLACK_WEBHOOK_URL
+          fi

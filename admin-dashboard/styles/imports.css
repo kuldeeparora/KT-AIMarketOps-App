@@ -1,0 +1,264 @@
+/* ========================================
+   EXTERNAL RESOURCE IMPORTS
+   ======================================== */
+
+/* ========================================
+   GOOGLE FONTS - PRIMARY FONTS
+   ======================================== */
+
+/* Inter - Primary Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* Roboto - Secondary Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+/* Open Sans - Alternative Font */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* Poppins - Modern Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* ========================================
+   GOOGLE FONTS - MONOSPACE FONTS
+   ======================================== */
+
+/* JetBrains Mono - Code Font */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+
+/* Fira Code - Alternative Code Font */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+
+/* ========================================
+   GOOGLE FONTS - DISPLAY FONTS
+   ======================================== */
+
+/* Playfair Display - Header Font */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+/* Merriweather - Alternative Header Font */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap');
+
+/* ========================================
+   ICON LIBRARIES
+   ======================================== */
+
+/* Font Awesome Icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Material Design Icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Sharp');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Two+Tone');
+
+/* Feather Icons */
+@import url('https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css');
+
+/* Lucide Icons */
+@import url('https://unpkg.com/lucide@latest/dist/umd/lucide.css');
+
+/* ========================================
+   CHARTING AND DATA VISUALIZATION
+   ======================================== */
+
+/* Chart.js */
+@import url('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css');
+
+/* ApexCharts */
+@import url('https://cdn.jsdelivr.net/npm/apexcharts@3.45.0/dist/apexcharts.css');
+
+/* D3.js (if needed) */
+@import url('https://d3js.org/d3.v7.min.js');
+
+/* ========================================
+   TABLE AND DATA COMPONENTS
+   ======================================== */
+
+/* DataTables */
+@import url('https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css');
+@import url('https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css');
+@import url('https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css');
+
+/* AG Grid */
+@import url('https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/styles/ag-grid.css');
+@import url('https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/styles/ag-theme-alpine.css');
+
+/* ========================================
+   FORM COMPONENTS
+   ======================================== */
+
+/* Select2 - Advanced Dropdowns */
+@import url('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
+
+/* Flatpickr - Date/Time Pickers */
+@import url('https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css');
+
+/* Choices.js - Alternative to Select2 */
+@import url('https://cdn.jsdelivr.net/npm/choices.js@10.2.0/public/assets/styles/choices.min.css');
+
+/* ========================================
+   NOTIFICATION AND ALERT COMPONENTS
+   ======================================== */
+
+/* SweetAlert2 - Enhanced Alerts */
+@import url('https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css');
+
+/* Toastr - Toast Notifications */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css');
+
+/* Notyf - Lightweight Notifications */
+@import url('https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css');
+
+/* ========================================
+   ANIMATION LIBRARIES
+   ======================================== */
+
+/* Animate.css */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css');
+
+/* AOS - Animate On Scroll */
+@import url('https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css');
+
+/* GSAP - Advanced Animations */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.css');
+
+/* ========================================
+   CODE HIGHLIGHTING
+   ======================================== */
+
+/* Prism.js */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css');
+
+/* Highlight.js */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+
+/* ========================================
+   THEMING AND CUSTOMIZATION
+   ======================================== */
+
+/* CSS Variables Ponyfill */
+@import url('https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2.4.8/dist/css-vars-ponyfill.min.css');
+
+/* Color Picker */
+@import url('https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css');
+
+/* ========================================
+   UTILITY LIBRARIES
+   ======================================== */
+
+/* Lodash (if needed for utilities) */
+@import url('https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js');
+
+/* Moment.js - Date/Time Utilities */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js');
+
+/* Numeral.js - Number Formatting */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js');
+
+/* ========================================
+   FILE HANDLING
+   ======================================== */
+
+/* Dropzone.js - File Upload */
+@import url('https://cdn.jsdelivr.net/npm/dropzone@6.0.0-beta.2/dist/min/dropzone.min.css');
+
+/* FilePond - Alternative File Upload */
+@import url('https://cdn.jsdelivr.net/npm/filepond@4.30.4/dist/filepond.min.css');
+
+/* ========================================
+   EDITOR COMPONENTS
+   ======================================== */
+
+/* Quill.js - Rich Text Editor */
+@import url('https://cdn.quilljs.com/1.3.6/quill.snow.css');
+
+/* CodeMirror - Code Editor */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material.min.css');
+
+/* ========================================
+   MAP AND LOCATION
+   ======================================== */
+
+/* Leaflet - Maps */
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Focus Visible Polyfill */
+@import url('https://cdn.jsdelivr.net/npm/focus-visible@5.2.0/dist/focus-visible.min.css');
+
+/* ========================================
+   PERFORMANCE OPTIMIZATION
+   ======================================== */
+
+/* Intersection Observer Polyfill */
+@import url('https://cdn.jsdelivr.net/npm/intersection-observer@0.12.2/intersection-observer.min.js');
+
+/* Resize Observer Polyfill */
+@import url('https://cdn.jsdelivr.net/npm/resize-observer-polyfill@1.5.1/dist/ResizeObserver.min.js');
+
+/* ========================================
+   SECURITY
+   ======================================== */
+
+/* DOMPurify - XSS Protection */
+@import url('https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js');
+
+/* ========================================
+   MONITORING AND ANALYTICS
+   ======================================== */
+
+/* Sentry - Error Tracking */
+@import url('https://browser.sentry-cdn.com/7.68.0/bundle.min.js');
+
+/* ========================================
+   CUSTOM FONT LOADING OPTIMIZATION
+   ======================================== */
+
+/* Preload critical fonts */
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
+
+/* ========================================
+   RESPONSIVE IMAGE OPTIMIZATION
+   ======================================== */
+
+/* Lazy Loading for Images */
+@import url('https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js');
+
+/* ========================================
+   PWA SUPPORT
+   ======================================== */
+
+/* Service Worker Registration */
+@import url('https://cdn.jsdelivr.net/npm/workbox-webpack-plugin@7.0.0/build/workbox-sw.min.js');
+
+/* ========================================
+   INTERNATIONALIZATION
+   ======================================== */
+
+/* i18next - Internationalization */
+@import url('https://cdn.jsdelivr.net/npm/i18next@23.4.4/dist/umd/i18next.min.js');
+
+/* ========================================
+   TESTING SUPPORT
+   ======================================== */
+
+/* Testing Library (Development Only) */
+@import url('https://cdn.jsdelivr.net/npm/@testing-library/dom@9.3.3/dist/@testing-library/dom.umd.min.js');
+
+/* ========================================
+   DEVELOPMENT TOOLS
+   ======================================== */
+
+/* React DevTools (Development Only) */
+@import url('https://cdn.jsdelivr.net/npm/react-devtools@4.28.4/standalone/umd/react-devtools.min.js');
+
+/* ========================================
+   END OF IMPORTS
+   ======================================== */ 

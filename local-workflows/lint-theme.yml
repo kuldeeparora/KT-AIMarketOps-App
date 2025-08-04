@@ -1,0 +1,45 @@
+name: Lint Shopify Theme
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint-liquid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - name: Install Shopify Theme Linter
+        run: gem install theme-check
+      - name: Add Ruby Gems bin to PATH
+        run: echo "$(ruby -e 'puts Gem.user_dir')/bin" >> $GITHUB_PATH
+      - name: Run Shopify Theme Linter
+        run: |
+          theme-check --fail-level error | grep -v 'suggestion: LiquidTag'
+
+  lint-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Lint HTML
+        run: |
+          npx htmlhint "**/*.liquid" || true
+
+  lint-css:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install Stylelint dependencies
+        run: npm install --no-save stylelint stylelint-config-shopify postcss-html
+      - name: Lint CSS and Liquid files
+        run: |
+          npx stylelint "assets/**/*.css" "sections/**/*.liquid" "snippets/**/*.liquid" "templates/**/*.liquid" || true

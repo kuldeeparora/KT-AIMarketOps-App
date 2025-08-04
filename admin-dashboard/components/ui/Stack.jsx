@@ -1,0 +1,10 @@
+import React from 'react';
+
+export default function Stack() {
+  return (
+    <div>
+      <h1>Stack</h1>
+      <p>This component is under construction.</p>
+    </div>
+  );
+}

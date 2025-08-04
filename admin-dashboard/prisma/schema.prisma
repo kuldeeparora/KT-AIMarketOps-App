@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String?
+  role      Role     @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  inventoryHistory InventoryHistory[]
+
+  @@map("users")
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  sku          String   @unique
+  productName  String
+  stockLevel   Int      @default(0)
+  costPrice    Decimal  @default(0) @db.Decimal(10, 2)
+  sellingPrice Decimal  @default(0) @db.Decimal(10, 2)
+  vendor       String?
+  category     String?
+  isKit        Boolean  @default(false)
+  reorderPoint Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  inventoryHistory InventoryHistory[]
+
+  @@map("products")
+}
+
+model InventoryHistory {
+  id           Int      @id @default(autoincrement())
+  productId    String
+  oldStock     Int?
+  newStock     Int?
+  changeReason String?
+  changedBy    String?
+  changedAt    DateTime @default(now())
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User?  @relation(fields: [changedBy], references: [id])
+
+  @@map("inventory_history")
+}
+
+model SellerDynamicsProduct {
+  id           String   @id @default(cuid())
+  sku          String   @unique
+  productName  String
+  stockLevel   Int      @default(0)
+  costPrice    Decimal  @default(0) @db.Decimal(10, 2)
+  vendor       String?
+  category     String?
+  isKit        Boolean  @default(false)
+  goodId       String?
+  reorderPoint Int      @default(0)
+  lastUpdated  DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@map("sellerdynamics_products")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  VIEWER
+} 

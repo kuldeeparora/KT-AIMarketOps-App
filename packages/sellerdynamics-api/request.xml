@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetStockLevels xmlns="http://login.sellerdynamics.com/">
+      <encryptedLogin>08FGM9OUmR5elT6wytKIp1TEeaDggdT2BhmSVmYKJ1KV9+lOs2Qvm/nlG3F+W3eibmWa9iaC5yHSqwtIC9gClvDRJ5cqRQVLeWfBs1WOsIM=</encryptedLogin>
+      <retailerId>334a1b08-eefe-43c3-ab8c-cb8599dfd85e</retailerId>
+      <pageNumber>1</pageNumber>
+      <pageSize>5000</pageSize>
+    </GetStockLevels>
+  </soap:Body>
+</soap:Envelope>

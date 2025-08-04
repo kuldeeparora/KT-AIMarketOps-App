@@ -1,0 +1,194 @@
+{
+  "invoices": [
+    {
+      "id": "KT-190725-03",
+      "number": "KT-190725-03",
+      "type": "invoice",
+      "client": "Test Client",
+      "clientAddress": "123 Test Street",
+      "shipTo": "",
+      "date": "2025-07-19",
+      "dueDate": "2025-08-18",
+      "terms": "Net 30",
+      "amount": 100,
+      "tax": 20,
+      "shipping": 3.99,
+      "total": 123.99,
+      "status": "Draft",
+      "paymentDate": null,
+      "paymentMethod": "BACS",
+      "bankTransactionId": null,
+      "items": [
+        {
+          "description": "Test Item",
+          "vat": "NaN% S",
+          "quantity": 2,
+          "rate": 50,
+          "amount": 100
+        }
+      ],
+      "notes": "Test invoice",
+      "quickbooksId": null,
+      "vatNumber": "436489852",
+      "companyRegNumber": "08356448",
+      "bankDetails": {
+        "bankName": "Kent Traders Limited",
+        "sortCode": "04-00-04",
+        "accountNumber": "19730799"
+      },
+      "createdAt": "2025-07-19T22:00:25.012Z"
+    },
+    {
+      "id": "KT-190725-30",
+      "number": "KT-190725-30",
+      "type": "invoice",
+      "client": "Test Client",
+      "clientAddress": "",
+      "shipTo": "",
+      "date": "2025-07-19",
+      "dueDate": "2025-08-18",
+      "terms": "Net 30",
+      "amount": 100,
+      "tax": 20,
+      "shipping": 3.99,
+      "total": 123.99,
+      "status": "Draft",
+      "paymentDate": null,
+      "paymentMethod": "BACS",
+      "bankTransactionId": null,
+      "items": [
+        {
+          "description": "Test Item",
+          "vat": "NaN% S",
+          "quantity": 1,
+          "rate": 100,
+          "amount": 100
+        }
+      ],
+      "notes": "Test invoice",
+      "quickbooksId": null,
+      "vatNumber": "436489852",
+      "companyRegNumber": "08356448",
+      "bankDetails": {
+        "bankName": "Kent Traders Limited",
+        "sortCode": "04-00-04",
+        "accountNumber": "19730799"
+      },
+      "createdAt": "2025-07-19T22:08:50.205Z"
+    },
+    {
+      "id": "KT-190725-73",
+      "number": "KT-190725-73",
+      "type": "invoice",
+      "client": "Test Client",
+      "clientAddress": "",
+      "shipTo": "",
+      "date": "2025-07-19",
+      "dueDate": "2025-08-18",
+      "terms": "Net 30",
+      "amount": 100,
+      "tax": 20,
+      "shipping": 3.99,
+      "total": 123.99,
+      "status": "Draft",
+      "paymentDate": null,
+      "paymentMethod": "BACS",
+      "bankTransactionId": null,
+      "items": [
+        {
+          "description": "Test Item",
+          "vat": "NaN% S",
+          "quantity": 1,
+          "rate": 100,
+          "amount": 100
+        }
+      ],
+      "notes": "Test invoice",
+      "quickbooksId": null,
+      "vatNumber": "436489852",
+      "companyRegNumber": "08356448",
+      "bankDetails": {
+        "bankName": "Kent Traders Limited",
+        "sortCode": "04-00-04",
+        "accountNumber": "19730799"
+      },
+      "createdAt": "2025-07-19T22:09:33.862Z"
+    },
+    {
+      "id": "KT-190725-70",
+      "number": "KT-190725-70",
+      "type": "invoice",
+      "client": "Integration Test Vendor",
+      "clientAddress": "456 Integration Street, London",
+      "shipTo": "",
+      "date": "2025-07-19",
+      "dueDate": "2025-08-18",
+      "terms": "Net 30",
+      "amount": 500,
+      "tax": 100,
+      "shipping": 3.99,
+      "total": 603.99,
+      "status": "Draft",
+      "paymentDate": null,
+      "paymentMethod": "BACS",
+      "bankTransactionId": null,
+      "items": [
+        {
+          "description": "Integration Test Product",
+          "vat": "NaN% S",
+          "quantity": 5,
+          "rate": 100,
+          "amount": 500
+        }
+      ],
+      "notes": "Integration test invoice",
+      "quickbooksId": null,
+      "vatNumber": "436489852",
+      "companyRegNumber": "08356448",
+      "bankDetails": {
+        "bankName": "Kent Traders Limited",
+        "sortCode": "04-00-04",
+        "accountNumber": "19730799"
+      },
+      "createdAt": "2025-07-19T22:16:10.472Z"
+    },
+    {
+      "id": "KT-190725-86",
+      "number": "KT-190725-86",
+      "type": "invoice",
+      "client": "Integration Test Vendor",
+      "clientAddress": "456 Integration Street, London",
+      "shipTo": "",
+      "date": "2025-07-19",
+      "dueDate": "2025-08-18",
+      "terms": "Net 30",
+      "amount": 500,
+      "tax": 100,
+      "shipping": 3.99,
+      "total": 603.99,
+      "status": "Draft",
+      "paymentDate": null,
+      "paymentMethod": "BACS",
+      "bankTransactionId": null,
+      "items": [
+        {
+          "description": "Integration Test Product",
+          "vat": "NaN% S",
+          "quantity": 5,
+          "rate": 100,
+          "amount": 500
+        }
+      ],
+      "notes": "Integration test invoice",
+      "quickbooksId": null,
+      "vatNumber": "436489852",
+      "companyRegNumber": "08356448",
+      "bankDetails": {
+        "bankName": "Kent Traders Limited",
+        "sortCode": "04-00-04",
+        "accountNumber": "19730799"
+      },
+      "createdAt": "2025-07-19T22:16:32.970Z"
+    }
+  ]
+}

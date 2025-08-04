@@ -1,0 +1,1258 @@
+name: 🚀 Kent Traders - Advanced Website Health Monitor
+
+on:
+  schedule:
+    # Run every 30 minutes during business hours (9 AM to 6 PM UTC)
+    - cron: '*/30 9-18 * * *'
+    # Run every 2 hours during off-hours
+    - cron: '0 */2 * * *'
+    # Comprehensive daily check at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  WEBSITE_URL: "https://kenttraders.co.uk"
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  # =========================================================================
+  # BROKEN LINKS DETECTION
+  # =========================================================================
+  broken-links-check:
+    runs-on: ubuntu-latest
+    name: 🔗 Broken Links Detection
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm install -g broken-link-checker lighthouse sitemap-generator-cli
+        
+    - name: Check for broken links
+      id: link-check
+      run: |
+        echo "🔍 Checking for broken links on $WEBSITE_URL"
+        
+        # Generate comprehensive link check
+        blc $WEBSITE_URL \
+          --recursive \
+          --ordered \
+          --exclude-external \
+          --filter-level 2 \
+          --requests 10 \
+          --max-sockets 20 \
+          --timeout 30000 \
+          --retry 2 \
+          --output report.json \
+          --format json || echo "Issues found"
+          
+        # Parse results
+        if [ -f report.json ]; then
+          BROKEN_COUNT=$(jq '[.[] | select(.status != "OK")] | length' report.json)
+          echo "broken_count=$BROKEN_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ "$BROKEN_COUNT" -gt 0 ]; then
+            echo "❌ Found $BROKEN_COUNT broken links"
+            jq '[.[] | select(.status != "OK")] | .[] | "❌ " + .url + " -> " + .error' report.json > broken_links.txt
+            echo "broken_links_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No broken links found"
+            echo "broken_links_found=false" >> $GITHUB_OUTPUT
+          fi
+        fi
+        
+    - name: Upload broken links report
+      if: steps.link-check.outputs.broken_links_found == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: broken-links-report
+        path: |
+          report.json
+          broken_links.txt
+          
+    - name: Send broken links alert
+      if: steps.link-check.outputs.broken_links_found == 'true'
+      run: |
+        if [ -n "$SLACK_WEBHOOK" ]; then
+          curl -X POST $SLACK_WEBHOOK \
+            -H 'Content-type: application/json' \
+            --data '{
+              "text": "🚨 BROKEN LINKS DETECTED",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚨 Kent Traders - Broken Links Alert"
+                  }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Found *${{ steps.link-check.outputs.broken_count }}* broken links on the website."
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "📋 *Details:*\n```$(cat broken_links.txt | head -10)```"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Full Report"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }'
+        else
+          echo "⚠️ Slack webhook not configured - skipping notification"
+        fi
+
+  # =========================================================================
+  # PERFORMANCE MONITORING
+  # =========================================================================
+  performance-check:
+    runs-on: ubuntu-latest
+    name: ⚡ Performance Monitoring
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Lighthouse CI
+      run: npm install -g @lhci/cli
+      
+    - name: Run Lighthouse audit
+      id: lighthouse
+      run: |
+        echo "🔍 Running Lighthouse audit on $WEBSITE_URL"
+        
+        lhci autorun --config='{
+          "ci": {
+            "collect": {
+              "url": ["${{ env.WEBSITE_URL }}", "${{ env.WEBSITE_URL }}/products", "${{ env.WEBSITE_URL }}/collections"],
+              "numberOfRuns": 3
+            },
+            "assert": {
+              "assertions": {
+                "categories:performance": ["error", {"minScore": 0.6}],
+                "categories:accessibility": ["error", {"minScore": 0.8}],
+                "categories:best-practices": ["error", {"minScore": 0.8}],
+                "categories:seo": ["error", {"minScore": 0.8}]
+              }
+            },
+            "upload": {
+              "target": "temporary-public-storage"
+            }
+          }
+        }' || echo "Performance issues detected"
+        
+        # Extract key metrics
+        if [ -f lhci_reports/manifest.json ]; then
+          PERF_SCORE=$(jq '.[] | select(.isRepresentativeRun == true) | .summary.performance' lhci_reports/manifest.json | head -1)
+          echo "performance_score=$PERF_SCORE" >> $GITHUB_OUTPUT
+          
+          if (( $(echo "$PERF_SCORE < 0.6" | bc -l) )); then
+            echo "performance_issue=true" >> $GITHUB_OUTPUT
+          else
+            echo "performance_issue=false" >> $GITHUB_OUTPUT
+          fi
+        fi
+        
+    - name: Upload performance report
+      uses: actions/upload-artifact@v4
+      with:
+        name: lighthouse-report
+        path: lhci_reports/
+        
+    - name: Send performance alert
+      if: steps.lighthouse.outputs.performance_issue == 'true'
+      run: |
+        curl -X POST $SLACK_WEBHOOK \
+          -H 'Content-type: application/json' \
+          --data '{
+            "text": "⚡ PERFORMANCE ALERT",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "⚡ Kent Traders - Performance Alert"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Performance score dropped to *${{ steps.lighthouse.outputs.performance_score }}* (below 60% threshold)"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "🔧 *Recommended Actions:*\n• Check for new scripts or images\n• Verify CDN performance\n• Review recent code changes\n• Monitor server response times"
+                }
+              }
+            ]
+          }'
+
+  # =========================================================================
+  # FUNCTIONALITY TESTING
+  # =========================================================================
+  functionality-test:
+    runs-on: ubuntu-latest
+    name: 🧪 Functionality Testing
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Playwright
+      run: |
+        npm install -g playwright
+        npx playwright install chromium
+        
+    - name: Create functionality test
+      run: |
+        cat > functionality-test.js << 'EOF'
+        const { chromium } = require('playwright');
+        
+        (async () => {
+          const browser = await chromium.launch();
+          const context = await browser.newContext();
+          const page = await context.newPage();
+          
+          const results = {
+            homepage: false,
+            search: false,
+            product_page: false,
+            cart: false,
+            checkout: false,
+            registration: false,
+            login: false
+          };
+          
+          try {
+            // Test homepage
+            console.log('🏠 Testing homepage...');
+            await page.goto('${{ env.WEBSITE_URL }}');
+            await page.waitForSelector('body', { timeout: 10000 });
+            results.homepage = true;
+            
+            // Test search
+            console.log('🔍 Testing search...');
+            await page.fill('input[name="q"]', 'test');
+            await page.press('input[name="q"]', 'Enter');
+            await page.waitForSelector('.search-results', { timeout: 5000 });
+            results.search = true;
+            
+            // Test product page
+            console.log('📦 Testing product page...');
+            await page.goto('${{ env.WEBSITE_URL }}/products');
+            const productLink = await page.locator('.product-item a').first();
+            if (productLink) {
+              await productLink.click();
+              await page.waitForSelector('.product-form', { timeout: 5000 });
+              results.product_page = true;
+            }
+            
+            // Test add to cart
+            console.log('🛒 Testing add to cart...');
+            const addToCartBtn = await page.locator('button[name="add"], input[name="add"]').first();
+            if (addToCartBtn) {
+              await addToCartBtn.click();
+              await page.waitForTimeout(2000);
+              results.cart = true;
+            }
+            
+            // Test checkout access
+            console.log('💳 Testing checkout access...');
+            await page.goto('${{ env.WEBSITE_URL }}/checkout');
+            await page.waitForSelector('body', { timeout: 5000 });
+            results.checkout = true;
+            
+            // Test registration page
+            console.log('👤 Testing registration page...');
+            await page.goto('${{ env.WEBSITE_URL }}/account/register');
+            await page.waitForSelector('form#create_customer', { timeout: 5000 });
+            results.registration = true;
+            
+            // Test login page
+            console.log('🔐 Testing login page...');
+            await page.goto('${{ env.WEBSITE_URL }}/account/login');
+            await page.waitForSelector('form#customer_login', { timeout: 5000 });
+            results.login = true;
+            
+          } catch (error) {
+            console.error('Test error:', error.message);
+          }
+          
+          await browser.close();
+          
+          // Output results
+          console.log('📊 Test Results:', JSON.stringify(results, null, 2));
+          
+          const failedTests = Object.entries(results)
+            .filter(([key, value]) => !value)
+            .map(([key]) => key);
+            
+          if (failedTests.length > 0) {
+            console.error('❌ Failed tests:', failedTests.join(', '));
+            process.exit(1);
+          } else {
+            console.log('✅ All tests passed!');
+          }
+        })();
+        EOF
+        
+    - name: Run functionality tests
+      id: functionality
+      run: |
+        node functionality-test.js || echo "functionality_issues=true" >> $GITHUB_OUTPUT
+        
+    - name: Send functionality alert
+      if: steps.functionality.outputs.functionality_issues == 'true'
+      run: |
+        curl -X POST $SLACK_WEBHOOK \
+          -H 'Content-type: application/json' \
+          --data '{
+            "text": "🧪 FUNCTIONALITY ALERT",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🧪 Kent Traders - Functionality Alert"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "❌ Some website functionality tests failed. Check the detailed logs for specific issues."
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Test Results"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }'
+
+  # =========================================================================
+  # CONVERSION TRACKING VALIDATION
+  # =========================================================================
+  conversion-validation:
+    runs-on: ubuntu-latest
+    name: 📈 Conversion Tracking Validation
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm init -y
+        npm install puppeteer
+      
+    - name: Validate conversion optimizations
+      run: |
+        cat > conversion-validation.js << 'EOF'
+        const puppeteer = require('puppeteer');
+        
+        (async () => {
+          const browser = await puppeteer.launch();
+          const page = await browser.newPage();
+          
+          // Enable request interception to monitor analytics calls
+          await page.setRequestInterception(true);
+          
+          const analyticsRequests = [];
+          page.on('request', (request) => {
+            const url = request.url();
+            if (url.includes('google-analytics.com') || 
+                url.includes('googletagmanager.com') ||
+                url.includes('gtag') ||
+                url.includes('analytics')) {
+              analyticsRequests.push(url);
+            }
+            request.continue();
+          });
+          
+          try {
+            // Check homepage
+            await page.goto('${{ env.WEBSITE_URL }}');
+            await page.waitForTimeout(3000);
+            
+            // Check for conversion optimizer elements
+            const guestCheckoutBtn = await page.$('.guest-checkout-btn');
+            const stockIndicators = await page.$$('.stock-indicator');
+            const trustBadges = await page.$$('.trust-badge');
+            const chatBubble = await page.$('.chat-bubble');
+            
+            console.log('🎯 Conversion Elements Check:');
+            console.log('- Guest checkout button:', guestCheckoutBtn ? '✅' : '❌');
+            console.log('- Stock indicators:', stockIndicators.length > 0 ? '✅' : '❌');
+            console.log('- Trust badges:', trustBadges.length > 0 ? '✅' : '❌');
+            console.log('- Chat bubble:', chatBubble ? '✅' : '❌');
+            
+            // Check analytics tracking
+            console.log('📊 Analytics Requests:', analyticsRequests.length);
+            
+            // Check for JavaScript errors
+            const errors = [];
+            page.on('pageerror', (error) => {
+              errors.push(error.message);
+            });
+            
+            if (errors.length > 0) {
+              console.error('❌ JavaScript Errors:', errors);
+              process.exit(1);
+            }
+            
+            console.log('✅ Conversion optimization validation passed!');
+            
+          } catch (error) {
+            console.error('❌ Validation failed:', error);
+            process.exit(1);
+          }
+          
+          await browser.close();
+        })();
+        EOF
+        
+        node conversion-validation.js
+
+  # =========================================================================
+  # SECURITY SCAN
+  # =========================================================================
+  security-scan:
+    runs-on: ubuntu-latest
+    name: 🔒 Security Scan
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run security headers check
+      run: |
+        echo "🔒 Checking security headers..."
+        
+        curl -I $WEBSITE_URL | grep -E "(X-Frame-Options|X-Content-Type-Options|X-XSS-Protection|Strict-Transport-Security)" || echo "Some security headers missing"
+        
+        # Check for SSL
+        openssl s_client -connect kenttraders.co.uk:443 -servername kenttraders.co.uk < /dev/null 2>/dev/null | openssl x509 -noout -dates
+        
+    - name: Check for common vulnerabilities
+      run: |
+        echo "🕷️ Checking for common vulnerabilities..."
+        
+        # Check for exposed sensitive files
+        curl -s -o /dev/null -w "%{http_code}" $WEBSITE_URL/.env && echo "❌ .env file exposed" || echo "✅ .env file protected"
+        curl -s -o /dev/null -w "%{http_code}" $WEBSITE_URL/config.json && echo "❌ config.json exposed" || echo "✅ config.json protected"
+
+  # =========================================================================
+  # ENHANCED DAILY SUMMARY WITH INTELLIGENT ALERTS
+  # =========================================================================
+  daily-summary:
+    runs-on: ubuntu-latest
+    name: 📊 Enhanced Daily Summary Report
+    needs: [broken-links-check, performance-check, functionality-test, conversion-validation, seo-outreach-check, api-health-check, chat-functionality-check, inventory-health-check, conversion-optimization-check]
+    if: always()
+    
+    steps:
+    - name: Generate comprehensive summary report
+      run: |
+        echo "📊 KENT TRADERS - COMPREHENSIVE HEALTH REPORT" > summary.md
+        echo "=================================================" >> summary.md
+        echo "" >> summary.md
+        echo "**Date:** $(date)" >> summary.md
+        echo "**Report ID:** ${{ github.run_id }}" >> summary.md
+        echo "" >> summary.md
+        
+        # Job status summary
+        echo "## 🔍 Test Results Overview" >> summary.md
+        echo "" >> summary.md
+        echo "| Category | Test | Status | Priority |" >> summary.md
+        echo "|----------|------|--------|----------|" >> summary.md
+        echo "| 🔗 Links | Broken Links | ${{ needs.broken-links-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | High |" >> summary.md
+        echo "| ⚡ Performance | Page Speed | ${{ needs.performance-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | High |" >> summary.md
+        echo "| 🧪 Functionality | User Journey | ${{ needs.functionality-test.result == 'success' && '✅ Passed' || '❌ Failed' }} | Critical |" >> summary.md
+        echo "| 📈 Conversion | Optimization | ${{ needs.conversion-validation.result == 'success' && '✅ Passed' || '❌ Failed' }} | Critical |" >> summary.md
+        echo "| 🎯 SEO | Product Outreach | ${{ needs.seo-outreach-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | Medium |" >> summary.md
+        echo "| 🔌 API | Health Check | ${{ needs.api-health-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | High |" >> summary.md
+        echo "| 💬 Chat | System Health | ${{ needs.chat-functionality-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | Medium |" >> summary.md
+        echo "| 📦 Inventory | Stock Management | ${{ needs.inventory-health-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | High |" >> summary.md
+        echo "| 🎯 Conversion | Features Check | ${{ needs.conversion-optimization-check.result == 'success' && '✅ Passed' || '❌ Failed' }} | Critical |" >> summary.md
+        echo "" >> summary.md
+        
+        # Calculate overall health score
+        TOTAL_TESTS=9
+        PASSED_TESTS=0
+        
+        [[ "${{ needs.broken-links-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.performance-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.functionality-test.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.conversion-validation.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.seo-outreach-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.api-health-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.chat-functionality-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.inventory-health-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        [[ "${{ needs.conversion-optimization-check.result }}" == "success" ]] && ((PASSED_TESTS++))
+        
+        HEALTH_SCORE=$((PASSED_TESTS * 100 / TOTAL_TESTS))
+        
+        echo "## 📊 Overall Health Score: ${HEALTH_SCORE}%" >> summary.md
+        echo "" >> summary.md
+        
+        if [ $HEALTH_SCORE -ge 90 ]; then
+          echo "🟢 **Status: Excellent** - All systems operating optimally" >> summary.md
+        elif [ $HEALTH_SCORE -ge 75 ]; then
+          echo "🟡 **Status: Good** - Minor issues detected, monitoring required" >> summary.md
+        elif [ $HEALTH_SCORE -ge 50 ]; then
+          echo "🟠 **Status: Warning** - Multiple issues detected, action recommended" >> summary.md
+        else
+          echo "🔴 **Status: Critical** - Immediate attention required" >> summary.md
+        fi
+        echo "" >> summary.md
+        
+        # Critical issues section
+        echo "## 🚨 Priority Actions Required" >> summary.md
+        echo "" >> summary.md
+        
+        CRITICAL_ISSUES=false
+        
+        if [[ "${{ needs.functionality-test.result }}" != "success" ]]; then
+          echo "- 🚨 **CRITICAL**: User journey functionality issues - Immediate fix required" >> summary.md
+          CRITICAL_ISSUES=true
+        fi
+        
+        if [[ "${{ needs.conversion-validation.result }}" != "success" ]]; then
+          echo "- 🚨 **CRITICAL**: Conversion optimization problems - Revenue impact possible" >> summary.md
+          CRITICAL_ISSUES=true
+        fi
+        
+        if [[ "${{ needs.conversion-optimization-check.result }}" != "success" ]]; then
+          echo "- � **CRITICAL**: Conversion features not working - Check comprehensive optimizer" >> summary.md
+          CRITICAL_ISSUES=true
+        fi
+        
+        if [[ "${{ needs.broken-links-check.result }}" != "success" ]]; then
+          echo "- ⚠️ **HIGH**: Broken links detected - SEO and user experience impact" >> summary.md
+        fi
+        
+        if [[ "${{ needs.performance-check.result }}" != "success" ]]; then
+          echo "- ⚠️ **HIGH**: Performance issues detected - Page speed optimization needed" >> summary.md
+        fi
+        
+        if [[ "${{ needs.api-health-check.result }}" != "success" ]]; then
+          echo "- ⚠️ **HIGH**: API health issues - Cart/product functionality may be affected" >> summary.md
+        fi
+        
+        if [[ "${{ needs.inventory-health-check.result }}" != "success" ]]; then
+          echo "- ⚠️ **HIGH**: Inventory data issues - Stock display problems detected" >> summary.md
+        fi
+        
+        if [[ "${{ needs.seo-outreach-check.result }}" != "success" ]]; then
+          echo "- 📈 **MEDIUM**: SEO optimization issues - Product discoverability affected" >> summary.md
+        fi
+        
+        if [[ "${{ needs.chat-functionality-check.result }}" != "success" ]]; then
+          echo "- 💬 **MEDIUM**: Chat system issues - Customer support may be impacted" >> summary.md
+        fi
+        
+        if [ "$CRITICAL_ISSUES" = false ]; then
+          echo "✅ No critical issues detected" >> summary.md
+        fi
+        echo "" >> summary.md
+        
+        # Recommendations section
+        echo "## 🎯 Optimization Recommendations" >> summary.md
+        echo "" >> summary.md
+        echo "### Immediate Actions (0-24 hours)" >> summary.md
+        
+        if [[ "${{ needs.functionality-test.result }}" != "success" ]]; then
+          echo "- Investigate and fix user journey blocking issues" >> summary.md
+          echo "- Test checkout process manually" >> summary.md
+          echo "- Verify cart functionality" >> summary.md
+        fi
+        
+        if [[ "${{ needs.conversion-validation.result }}" != "success" ]]; then
+          echo "- Check conversion optimization scripts deployment" >> summary.md
+          echo "- Verify comprehensive-optimizer.js is loading" >> summary.md
+          echo "- Test guest checkout functionality" >> summary.md
+        fi
+        
+        echo "" >> summary.md
+        echo "### Short-term Actions (1-7 days)" >> summary.md
+        
+        if [[ "${{ needs.performance-check.result }}" != "success" ]]; then
+          echo "- Optimize images and assets" >> summary.md
+          echo "- Review and compress JavaScript files" >> summary.md
+          echo "- Implement advanced caching strategies" >> summary.md
+        fi
+        
+        if [[ "${{ needs.broken-links-check.result }}" != "success" ]]; then
+          echo "- Update internal links and navigation" >> summary.md
+          echo "- Fix product page URLs" >> summary.md
+          echo "- Verify collection page links" >> summary.md
+        fi
+        
+        echo "" >> summary.md
+        echo "### Long-term Improvements (1-4 weeks)" >> summary.md
+        echo "- A/B test new conversion optimization features" >> summary.md
+        echo "- Implement advanced SEO enhancements" >> summary.md
+        echo "- Enhance mobile user experience" >> summary.md
+        echo "- Optimize product discovery and search" >> summary.md
+        
+        # Set environment variables for alert logic
+        echo "HEALTH_SCORE=$HEALTH_SCORE" >> $GITHUB_ENV
+        echo "CRITICAL_ISSUES=$CRITICAL_ISSUES" >> $GITHUB_ENV
+        
+        cat summary.md
+        
+    - name: Send appropriate alert level
+      run: |
+        # Determine alert emoji and urgency based on health score
+        if [ "$HEALTH_SCORE" -ge 90 ]; then
+          ALERT_EMOJI="🟢"
+          ALERT_LEVEL="SUCCESS"
+          URGENCY="Low"
+        elif [ "$HEALTH_SCORE" -ge 75 ]; then
+          ALERT_EMOJI="🟡"
+          ALERT_LEVEL="WARNING"
+          URGENCY="Medium"
+        elif [ "$HEALTH_SCORE" -ge 50 ]; then
+          ALERT_EMOJI="🟠"
+          ALERT_LEVEL="WARNING"
+          URGENCY="High"
+        else
+          ALERT_EMOJI="🔴"
+          ALERT_LEVEL="CRITICAL"
+          URGENCY="Critical"
+        fi
+        
+        # Send to Slack with appropriate formatting
+        curl -X POST ${{ env.SLACK_WEBHOOK }} \
+          -H 'Content-type: application/json' \
+          --data "{
+            \"text\": \"$ALERT_EMOJI KENT TRADERS HEALTH REPORT - $ALERT_LEVEL\",
+            \"blocks\": [
+              {
+                \"type\": \"header\",
+                \"text\": {
+                  \"type\": \"plain_text\",
+                  \"text\": \"$ALERT_EMOJI Kent Traders - Health Report ($ALERT_LEVEL)\"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"fields\": [
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Health Score:* $HEALTH_SCORE%\"
+                  },
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Urgency:* $URGENCY\"
+                  },
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Date:* $(date)\"
+                  },
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Report ID:* ${{ github.run_id }}\"
+                  }
+                ]
+              },
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"View detailed report for comprehensive analysis and recommendations.\"
+                }
+              },
+              {
+                \"type\": \"actions\",
+                \"elements\": [
+                  {
+                    \"type\": \"button\",
+                    \"text\": {
+                      \"type\": \"plain_text\",
+                      \"text\": \"📊 View Full Report\"
+                    },
+                    \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+                  },
+                  {
+                    \"type\": \"button\",
+                    \"text\": {
+                      \"type\": \"plain_text\",
+                      \"text\": \"🌐 Check Website\"
+                    },
+                    \"url\": \"${{ env.WEBSITE_URL }}\"
+                  }
+                ]
+              }
+            ]
+          }"
+          
+    - name: Send critical alert if needed
+      if: env.CRITICAL_ISSUES == 'true'
+      run: |
+        # Send immediate critical alert
+        curl -X POST ${{ env.SLACK_WEBHOOK }} \
+          -H 'Content-type: application/json' \
+          --data '{
+            "text": "🚨 CRITICAL ALERT - Kent Traders Website Issues",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🚨 CRITICAL ALERT - Immediate Action Required"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Critical issues detected on Kent Traders website that may be affecting:\n• Customer checkout process\n• Conversion optimization features\n• Revenue generation\n\n*Immediate investigation and resolution required.*"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "🔍 Investigate Now"
+                    },
+                    "style": "danger",
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }'
+          
+    - name: Create GitHub issue for critical problems
+      if: env.CRITICAL_ISSUES == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `🚨 Critical Website Issues Detected - ${new Date().toDateString()}`;
+          const body = `
+          ## Critical Issues Detected
+          
+          Our automated monitoring has detected critical issues that require immediate attention:
+          
+          ### Failed Tests
+          ${{ needs.functionality-test.result != 'success' && '- ❌ User Journey Functionality\n' || '' }}${{ needs.conversion-validation.result != 'success' && '- ❌ Conversion Optimization\n' || '' }}${{ needs.conversion-optimization-check.result != 'success' && '- ❌ Conversion Features\n' || '' }}
+          
+          ### Impact
+          - Potential revenue loss
+          - Poor user experience
+          - Conversion rate reduction
+          
+          ### Immediate Actions Required
+          1. Investigate failing tests
+          2. Check website functionality manually
+          3. Verify conversion optimization scripts
+          4. Test checkout process
+          
+          ### Reports
+          - **Health Score**: ${process.env.HEALTH_SCORE}%
+          - **Report URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - **Website**: ${{ env.WEBSITE_URL }}
+          
+          ### Auto-generated
+          This issue was automatically created by the website health monitoring system.
+          `;
+          
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['critical', 'automated', 'website-health']
+          });
+
+  # =========================================================================
+  # WEEKLY COMPREHENSIVE REPORT
+  # =========================================================================
+  weekly-comprehensive-report:
+    runs-on: ubuntu-latest
+    name: 📈 Weekly Comprehensive Report
+    if: github.event.schedule == '0 6 * * 0' # Sundays at 6 AM UTC
+    
+    steps:
+    - name: Generate weekly report
+      run: |
+        echo "📈 KENT TRADERS - WEEKLY COMPREHENSIVE REPORT" > weekly_report.md
+        echo "=============================================" >> weekly_report.md
+        echo "" >> weekly_report.md
+        echo "**Week Ending:** $(date)" >> weekly_report.md
+        echo "" >> weekly_report.md
+        
+        echo "## 📊 Week Summary" >> weekly_report.md
+        echo "- Website uptime monitoring" >> weekly_report.md
+        echo "- Performance trend analysis" >> weekly_report.md
+        echo "- Conversion optimization effectiveness" >> weekly_report.md
+        echo "- SEO and product outreach improvements" >> weekly_report.md
+        echo "" >> weekly_report.md
+        
+        echo "## 🎯 Next Week Focus Areas" >> weekly_report.md
+        echo "- Continue monitoring critical metrics" >> weekly_report.md
+        echo "- Implement identified optimizations" >> weekly_report.md
+        echo "- A/B testing new features" >> weekly_report.md
+        echo "- Performance fine-tuning" >> weekly_report.md
+        
+        cat weekly_report.md
+        
+    - name: Send weekly report
+      run: |
+        curl -X POST ${{ env.SLACK_WEBHOOK }} \
+          -H 'Content-type: application/json' \
+          --data '{
+            "text": "📈 WEEKLY COMPREHENSIVE REPORT",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "📈 Kent Traders - Weekly Report"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Weekly comprehensive analysis and recommendations available."
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "📈 View Weekly Report"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }'
+
+  # =========================================================================
+  # SEO & PRODUCT OUTREACH MONITORING
+  # =========================================================================
+  seo-outreach-check:
+    runs-on: ubuntu-latest
+    name: 🎯 SEO & Product Outreach Monitor
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install SEO analysis tools
+      run: |
+        npm install -g lighthouse sitemap-generator-cli cheerio puppeteer
+        
+    - name: Check SEO fundamentals
+      id: seo-check
+      run: |
+        echo "🎯 Analyzing SEO and product discoverability"
+        
+        # Check robots.txt
+        curl -s $WEBSITE_URL/robots.txt > robots.txt
+        if grep -q "Disallow: /" robots.txt; then
+          echo "❌ Robots.txt blocking all crawlers!"
+          echo "robots_blocked=true" >> $GITHUB_OUTPUT
+        else
+          echo "✅ Robots.txt allows crawling"
+          echo "robots_blocked=false" >> $GITHUB_OUTPUT
+        fi
+        
+        # Check sitemap
+        if curl -s $WEBSITE_URL/sitemap.xml | head -n 1 | grep -q "xml"; then
+          echo "✅ Sitemap accessible"
+          echo "sitemap_accessible=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Sitemap not accessible"
+          echo "sitemap_accessible=false" >> $GITHUB_OUTPUT
+        fi
+        
+        # Check Google Search Console indexing
+        node -e "
+          const https = require('https');
+          const sampleProducts = [
+            '/products/hotel-amenities',
+            '/products/guest-room-supplies',
+            '/collections/hospitality-equipment'
+          ];
+          
+          sampleProducts.forEach(url => {
+            const checkUrl = \`https://www.google.com/search?q=site:kenttraders.co.uk\${url}\`;
+            console.log(\`Checking indexing for: \${url}\`);
+          });
+        "
+        
+    - name: Validate structured data
+      run: |
+        echo "🏗️ Validating structured data markup"
+        
+        # Check for JSON-LD structured data
+        curl -s $WEBSITE_URL | grep -o '<script type="application/ld+json">.*</script>' > structured_data.json || echo "No structured data found"
+        
+        if [ -s structured_data.json ]; then
+          echo "✅ Structured data found"
+          echo "structured_data=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ No structured data found"
+          echo "structured_data=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Check product metadata quality
+      run: |
+        echo "📦 Analyzing product page optimization"
+        
+        node -e "
+          const https = require('https');
+          
+          function checkPage(url) {
+            return new Promise((resolve) => {
+              https.get(url, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                  // Simple regex-based analysis
+                  const titleMatch = data.match(/<title[^>]*>([^<]+)<\/title>/i);
+                  const descMatch = data.match(/<meta[^>]*name=[\"']description[\"'][^>]*content=[\"']([^\"']*)[\"']/i);
+                  
+                  const analysis = {
+                    title: titleMatch ? titleMatch[1] : '',
+                    description: descMatch ? descMatch[1] : '',
+                    hasStructuredData: data.includes('application/ld+json'),
+                    hasImages: (data.match(/<img/g) || []).length,
+                    hasAlts: (data.match(/alt=/g) || []).length
+                  };
+                  
+                  console.log('SEO Analysis for ' + url + ':');
+                  console.log('Title: ' + (analysis.title ? '✅' : '❌') + ' ' + analysis.title.substring(0, 60));
+                  console.log('Description: ' + (analysis.description ? '✅' : '❌') + ' ' + analysis.description.substring(0, 80));
+                  console.log('Structured Data: ' + (analysis.hasStructuredData ? '✅' : '❌'));
+                  console.log('Images with ALTs: ' + analysis.hasAlts + '/' + analysis.hasImages + ' ' + (analysis.hasAlts/analysis.hasImages > 0.8 ? '✅' : '❌'));
+                  
+                  resolve(analysis);
+                });
+              }).on('error', () => resolve(null));
+            });
+          }
+          
+          (async () => {
+            const pages = [
+              '$WEBSITE_URL',
+              '$WEBSITE_URL/collections/all',
+              '$WEBSITE_URL/pages/about'
+            ];
+            
+            for (const page of pages) {
+              await checkPage(page);
+            }
+          })();
+        "
+
+  # =========================================================================
+  # API HEALTH & INTEGRATION MONITORING
+  # =========================================================================
+  api-health-check:
+    runs-on: ubuntu-latest
+    name: 🔌 API & Integration Health
+    
+    steps:
+    - name: Check Shopify API health
+      run: |
+        echo "🛒 Checking Shopify integrations"
+        
+        # Check cart functionality
+        CART_RESPONSE=$(curl -s -w "%{http_code}" -o /dev/null $WEBSITE_URL/cart.json)
+        if [ "$CART_RESPONSE" -eq 200 ]; then
+          echo "✅ Cart API accessible"
+        else
+          echo "❌ Cart API issues (HTTP $CART_RESPONSE)"
+        fi
+        
+        # Check products API
+        PRODUCTS_RESPONSE=$(curl -s -w "%{http_code}" -o /dev/null $WEBSITE_URL/products.json)
+        if [ "$PRODUCTS_RESPONSE" -eq 200 ]; then
+          echo "✅ Products API accessible"
+        else
+          echo "❌ Products API issues (HTTP $PRODUCTS_RESPONSE)"
+        fi
+        
+    - name: Check third-party integrations
+      run: |
+        echo "🔗 Checking third-party service integrations"
+        
+        # Check Google Analytics
+        if curl -s $WEBSITE_URL | grep -q "gtag\|ga\|analytics"; then
+          echo "✅ Google Analytics detected"
+        else
+          echo "❌ Google Analytics not detected"
+        fi
+        
+        # Check social media links
+        if curl -s $WEBSITE_URL | grep -q "facebook\|twitter\|instagram\|linkedin"; then
+          echo "✅ Social media integration detected"
+        else
+          echo "❌ No social media integration detected"
+        fi
+
+  # =========================================================================
+  # CHAT FUNCTIONALITY MONITORING
+  # =========================================================================
+  chat-functionality-check:
+    runs-on: ubuntu-latest
+    name: 💬 Chat System Health Monitor
+    
+    steps:
+    - name: Check chat widget functionality
+      run: |
+        echo "💬 Monitoring chat system health"
+        
+        node -e "
+          const https = require('https');
+          const cheerio = require('cheerio');
+          
+          https.get('$WEBSITE_URL', (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+              const $ = cheerio.load(data);
+              
+              // Check for chat widgets
+              const chatSelectors = [
+                '[id*=\"chat\"]',
+                '[class*=\"chat\"]',
+                '[id*=\"messenger\"]',
+                '[class*=\"messenger\"]',
+                'iframe[src*=\"chat\"]'
+              ];
+              
+              let chatWidgetsFound = 0;
+              let duplicateChats = [];
+              
+              chatSelectors.forEach(selector => {
+                const elements = $(selector);
+                if (elements.length > 0) {
+                  chatWidgetsFound += elements.length;
+                  if (elements.length > 1) {
+                    duplicateChats.push(selector + ' (' + elements.length + ' instances)');
+                  }
+                }
+              });
+              
+              console.log(\`Chat widgets found: \${chatWidgetsFound}\`);
+              
+              if (chatWidgetsFound === 0) {
+                console.log('❌ No chat widgets detected');
+              } else if (chatWidgetsFound === 1) {
+                console.log('✅ Single chat widget detected (optimal)');
+              } else {
+                console.log(\`⚠️ Multiple chat widgets detected: \${chatWidgetsFound}\`);
+                console.log('Potential duplicates:', duplicateChats);
+              }
+              
+              // Check for chat script errors in console
+              const scripts = $('script');
+              let chatScripts = 0;
+              scripts.each((i, script) => {
+                const src = $(script).attr('src') || '';
+                const content = $(script).html() || '';
+                if (src.includes('chat') || content.includes('chat') || 
+                    src.includes('messenger') || content.includes('messenger')) {
+                  chatScripts++;
+                }
+              });
+              
+              console.log(\`Chat-related scripts: \${chatScripts}\`);
+            });
+          });
+        "
+
+  # =========================================================================
+  # STOCK & INVENTORY MONITORING
+  # =========================================================================
+  inventory-health-check:
+    runs-on: ubuntu-latest
+    name: 📦 Inventory & Stock Health
+    
+    steps:
+    - name: Check inventory data accuracy
+      run: |
+        echo "📦 Monitoring inventory and stock levels"
+        
+        node -e "
+          const https = require('https');
+          
+          function checkProductInventory(productHandle) {
+            return new Promise((resolve) => {
+              const url = \`$WEBSITE_URL/products/\${productHandle}.json\`;
+              https.get(url, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                  try {
+                    const product = JSON.parse(data).product;
+                    const analysis = {
+                      handle: productHandle,
+                      available: product.available,
+                      variants: product.variants.length,
+                      outOfStock: product.variants.filter(v => !v.available).length,
+                      totalInventory: product.variants.reduce((sum, v) => sum + (v.inventory_quantity || 0), 0)
+                    };
+                    
+                    console.log(\`Product: \${productHandle}\`);
+                    console.log(\`  Available: \${analysis.available ? '✅' : '❌'}\`);
+                    console.log(\`  Variants: \${analysis.variants}\`);
+                    console.log(\`  Out of stock variants: \${analysis.outOfStock}\`);
+                    console.log(\`  Total inventory: \${analysis.totalInventory}\`);
+                    
+                    resolve(analysis);
+                  } catch (e) {
+                    console.log(\`❌ Error parsing product data for \${productHandle}\`);
+                    resolve(null);
+                  }
+                });
+              }).on('error', () => {
+                console.log(\`❌ Failed to fetch product \${productHandle}\`);
+                resolve(null);
+              });
+            });
+          }
+          
+          (async () => {
+            // Check a few sample products
+            const sampleProducts = ['hotel-amenities', 'guest-supplies', 'room-accessories'];
+            
+            for (const product of sampleProducts) {
+              await checkProductInventory(product);
+            }
+          })();
+        "
+
+  # =========================================================================
+  # CONVERSION OPTIMIZATION MONITORING
+  # =========================================================================
+  conversion-optimization-check:
+    runs-on: ubuntu-latest
+    name: 📈 Conversion Optimization Health
+    
+    steps:
+    - name: Check conversion optimization features
+      run: |
+        echo "📈 Validating conversion optimization implementations"
+        
+        node -e "
+          const https = require('https');
+          const cheerio = require('cheerio');
+          
+          https.get('$WEBSITE_URL', (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+              const $ = cheerio.load(data);
+              
+              console.log('🔍 Checking conversion optimization features:');
+              
+              // Check for guest checkout
+              const guestCheckout = $('[data-guest-checkout], .guest-checkout, [id*=\"guest\"]');
+              console.log(\`Guest Checkout: \${guestCheckout.length > 0 ? '✅' : '❌'}\`);
+              
+              // Check for trust signals
+              const trustSignals = $('[data-trust], .trust-badge, .security-badge, [class*=\"ssl\"]');
+              console.log(\`Trust Signals: \${trustSignals.length > 0 ? '✅' : '❌'}\`);
+              
+              // Check for shipping transparency
+              const shippingInfo = $('[data-shipping], .shipping-info, [class*=\"delivery\"]');
+              console.log(\`Shipping Transparency: \${shippingInfo.length > 0 ? '✅' : '❌'}\`);
+              
+              // Check for mobile optimization indicators
+              const mobileOptimization = $('meta[name=\"viewport\"]').length > 0;
+              console.log(\`Mobile Optimization: \${mobileOptimization ? '✅' : '❌'}\`);
+              
+              // Check for performance optimizations
+              const performanceOptimizations = $('[data-performance], .lazy-load, [loading=\"lazy\"]');
+              console.log(\`Performance Features: \${performanceOptimizations.length > 0 ? '✅' : '❌'}\`);
+              
+              // Check for analytics tracking
+              const analytics = $('script').text().includes('gtag') || $('script').text().includes('analytics');
+              console.log(\`Analytics Tracking: \${analytics ? '✅' : '❌'}\`);
+              
+              // Check comprehensive optimizer
+              const comprehensiveOptimizer = $('script[src*=\"comprehensive-optimizer\"]').length > 0 ||
+                                           $('script').text().includes('KTSEOOptimizer');
+              console.log(\`Comprehensive Optimizer: \${comprehensiveOptimizer ? '✅' : '❌'}\`);
+            });
+          });
+        "

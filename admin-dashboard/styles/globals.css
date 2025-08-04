@@ -1,0 +1,886 @@
+/* AIMarketOps-style custom styles */
+
+/* Force dark theme globally ONLY when in dark mode */
+.theme-dark,
+.theme-dark html,
+[data-theme="dark"] html,
+html[data-mui-color-scheme="dark"] {
+  scroll-behavior: smooth;
+  background-color: #1A1A1D !important;
+  color: #E8E8EA !important;
+}
+
+.theme-dark body,
+[data-theme="dark"] body,
+body[data-mui-color-scheme="dark"] {
+  font-family: 'Geist Sans', 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1A1A1D !important;
+  color: #E8E8EA !important;
+  margin: 0;
+  padding: 0;
+  /* Theme-aware background - will be overridden by Material-UI theme */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Force all containers and main elements to use dark theme ONLY in dark mode */
+.theme-dark #__next,
+[data-theme="dark"] #__next,
+#__next[data-mui-color-scheme="dark"] {
+  background-color: #1A1A1D !important;
+  color: #E8E8EA !important;
+  min-height: 100vh;
+}
+
+/* Force all main content areas to use dark background ONLY in dark mode */
+.theme-dark main,
+.theme-dark .MuiContainer-root,
+[data-theme="dark"] main,
+main[data-mui-color-scheme="dark"],
+[data-theme="dark"] .MuiContainer-root,
+.MuiContainer-root[data-mui-color-scheme="dark"] {
+  background-color: #1A1A1D !important;
+  color: #E8E8EA !important;
+}
+
+/* Force all Paper and Card components ONLY in dark mode */
+.theme-dark .MuiPaper-root,
+.theme-dark .MuiCard-root,
+[data-theme="dark"] .MuiPaper-root,
+.MuiPaper-root[data-mui-color-scheme="dark"],
+[data-theme="dark"] .MuiCard-root,
+.MuiCard-root[data-mui-color-scheme="dark"] {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+/* Force all Card components specifically ONLY in dark mode */
+[data-theme="dark"] .MuiCard-root,
+.MuiCard-root[data-mui-color-scheme="dark"] {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+  border: 1px solid #3A3A3D !important;
+}
+
+/* Force CardContent to inherit proper colors ONLY in dark mode */
+[data-theme="dark"] .MuiCardContent-root,
+.MuiCardContent-root[data-mui-color-scheme="dark"] {
+  background-color: inherit !important;
+  color: #E8E8EA !important;
+}
+
+/* Force all nested elements in cards to use proper colors ONLY in dark mode */
+[data-theme="dark"] .MuiCard-root .MuiTypography-root,
+.MuiCard-root[data-mui-color-scheme="dark"] .MuiTypography-root {
+  color: #E8E8EA !important;
+}
+
+[data-theme="dark"] .MuiCard-root .MuiTypography-colorTextSecondary,
+.MuiCard-root[data-mui-color-scheme="dark"] .MuiTypography-colorTextSecondary {
+  color: #A1A1AA !important;
+}
+
+/* Light theme support */
+.theme-light,
+.theme-light html,
+[data-theme="light"] html,
+html[data-mui-color-scheme="light"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+.theme-light body,
+[data-theme="light"] body,
+body[data-mui-color-scheme="light"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+.theme-light #__next,
+[data-theme="light"] #__next,
+#__next[data-mui-color-scheme="light"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+.theme-light .MuiPaper-root,
+.theme-light .MuiCard-root,
+[data-theme="light"] .MuiPaper-root,
+.MuiPaper-root[data-mui-color-scheme="light"],
+[data-theme="light"] .MuiCard-root,
+.MuiCard-root[data-mui-color-scheme="light"] {
+  background-color: #F8F9FA !important;
+  color: #1A1A1D !important;
+  border: 1px solid #E8EAED !important;
+}
+
+.theme-light .MuiCard-root .MuiTypography-root,
+[data-theme="light"] .MuiCard-root .MuiTypography-root,
+.MuiCard-root[data-mui-color-scheme="light"] .MuiTypography-root {
+  color: #1A1A1D !important;
+}
+
+.theme-light .MuiCard-root .MuiTypography-colorTextSecondary,
+[data-theme="light"] .MuiCard-root .MuiTypography-colorTextSecondary,
+.MuiCard-root[data-mui-color-scheme="light"] .MuiTypography-colorTextSecondary {
+  color: #5F6368 !important;
+}
+
+/* Light theme - Main content areas */
+.theme-light main,
+.theme-light .MuiContainer-root,
+.theme-light .MuiBox-root,
+[data-theme="light"] main,
+[data-theme="light"] .MuiContainer-root,
+[data-theme="light"] .MuiBox-root,
+main[data-mui-color-scheme="light"],
+.MuiContainer-root[data-mui-color-scheme="light"],
+.MuiBox-root[data-mui-color-scheme="light"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Tables */
+.theme-light .MuiTable-root,
+.theme-light .MuiTableHead-root,
+.theme-light .MuiTableBody-root,
+.theme-light .MuiTableRow-root,
+.theme-light .MuiTableCell-root,
+[data-theme="light"] .MuiTable-root,
+[data-theme="light"] .MuiTableHead-root,
+[data-theme="light"] .MuiTableBody-root,
+[data-theme="light"] .MuiTableRow-root,
+[data-theme="light"] .MuiTableCell-root,
+.MuiTable-root[data-mui-color-scheme="light"],
+.MuiTableHead-root[data-mui-color-scheme="light"],
+.MuiTableBody-root[data-mui-color-scheme="light"],
+.MuiTableRow-root[data-mui-color-scheme="light"],
+.MuiTableCell-root[data-mui-color-scheme="light"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border-color: #E8EAED !important;
+}
+
+/* Light theme - Typography */
+.theme-light .MuiTypography-root,
+[data-theme="light"] .MuiTypography-root,
+.MuiTypography-root[data-mui-color-scheme="light"] {
+  color: #1A1A1D !important;
+}
+
+.theme-light .MuiTypography-colorTextSecondary,
+[data-theme="light"] .MuiTypography-colorTextSecondary,
+.MuiTypography-colorTextSecondary[data-mui-color-scheme="light"] {
+  color: #5F6368 !important;
+}
+
+/* Light theme - Input fields */
+.theme-light .MuiTextField-root,
+.theme-light .MuiFormControl-root,
+.theme-light .MuiSelect-root,
+.theme-light .MuiInput-root,
+.theme-light .MuiOutlinedInput-root,
+[data-theme="light"] .MuiTextField-root,
+[data-theme="light"] .MuiFormControl-root,
+[data-theme="light"] .MuiSelect-root,
+[data-theme="light"] .MuiInput-root,
+[data-theme="light"] .MuiOutlinedInput-root,
+.MuiTextField-root[data-mui-color-scheme="light"],
+.MuiFormControl-root[data-mui-color-scheme="light"],
+.MuiSelect-root[data-mui-color-scheme="light"],
+.MuiInput-root[data-mui-color-scheme="light"],
+.MuiOutlinedInput-root[data-mui-color-scheme="light"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border-color: #E8EAED !important;
+}
+
+/* Light theme - Chips */
+.theme-light .MuiChip-root,
+[data-theme="light"] .MuiChip-root,
+.MuiChip-root[data-mui-color-scheme="light"] {
+  background-color: #F1F3F4 !important;
+  color: #1A1A1D !important;
+  border-color: #E8EAED !important;
+}
+
+/* Light theme - Comprehensive override for any missed elements */
+.theme-light,
+.theme-light *,
+[data-theme="light"],
+[data-theme="light"] *,
+html[data-mui-color-scheme="light"] *,
+body[data-mui-color-scheme="light"] * {
+  --mui-palette-background-default: #FFFFFF !important;
+  --mui-palette-background-paper: #F8F9FA !important;
+  --mui-palette-text-primary: #1A1A1D !important;
+  --mui-palette-text-secondary: #5F6368 !important;
+}
+
+/* Light theme - Force any remaining dark elements to light */
+.theme-light .css-1k5a0tf,
+.theme-light [class*="MuiBox"],
+.theme-light [class*="MuiContainer"],
+.theme-light [class*="MuiPaper"],
+[data-theme="light"] .css-1k5a0tf,
+[data-theme="light"] [class*="MuiBox"],
+[data-theme="light"] [class*="MuiContainer"],
+[data-theme="light"] [class*="MuiPaper"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Search and Filter components */
+.theme-light .MuiOutlinedInput-root,
+.theme-light .MuiFormControl-root .MuiOutlinedInput-root,
+.theme-light .MuiInputBase-root,
+.theme-light input,
+[data-theme="light"] .MuiOutlinedInput-root,
+[data-theme="light"] .MuiFormControl-root .MuiOutlinedInput-root,
+[data-theme="light"] .MuiInputBase-root,
+[data-theme="light"] input {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border-color: #E8EAED !important;
+}
+
+.theme-light .MuiOutlinedInput-notchedOutline,
+[data-theme="light"] .MuiOutlinedInput-notchedOutline {
+  border-color: #E8EAED !important;
+}
+
+/* Light theme - Dropdown menus and selects */
+.theme-light .MuiPopover-paper,
+.theme-light .MuiMenu-paper,
+.theme-light .MuiSelect-select,
+[data-theme="light"] .MuiPopover-paper,
+[data-theme="light"] .MuiMenu-paper,
+[data-theme="light"] .MuiSelect-select {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border: 1px solid #E8EAED !important;
+}
+
+/* Light theme - Navigation sidebar improvements */
+.theme-light .MuiListItem-root,
+.theme-light .MuiListItemButton-root,
+.theme-light .MuiList-root,
+[data-theme="light"] .MuiListItem-root,
+[data-theme="light"] .MuiListItemButton-root,
+[data-theme="light"] .MuiList-root {
+  background-color: #F8F9FA !important;
+  color: #1A1A1D !important;
+}
+
+.theme-light .MuiListItemButton-root:hover,
+[data-theme="light"] .MuiListItemButton-root:hover {
+  background-color: #E8EAED !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Force any CSS classes with dark styling */
+.theme-light [class*="css-"],
+[data-theme="light"] [class*="css-"] {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+/* Light theme - Specific overrides for filter controls */
+.theme-light .MuiChip-root.MuiChip-filled,
+[data-theme="light"] .MuiChip-root.MuiChip-filled {
+  background-color: #F1F3F4 !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Icons and buttons */
+.theme-light .MuiIconButton-root,
+.theme-light .MuiSvgIcon-root,
+[data-theme="light"] .MuiIconButton-root,
+[data-theme="light"] .MuiSvgIcon-root {
+  color: #5F6368 !important;
+}
+
+.theme-light .MuiIconButton-root:hover,
+[data-theme="light"] .MuiIconButton-root:hover {
+  background-color: #F1F3F4 !important;
+  color: #1A1A1D !important;
+}
+
+/* Force table styling */
+.MuiTable-root {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+.MuiTableHead-root {
+  background-color: #2A2A2D !important;
+}
+
+.MuiTableCell-root {
+  background-color: inherit !important;
+  color: #E8E8EA !important;
+  border-bottom-color: #3A3A3D !important;
+}
+
+.MuiTableRow-root {
+  background-color: #252528 !important;
+}
+
+.MuiTableRow-root:hover {
+  background-color: #2A2A2D !important;
+}
+
+/* Force text colors */
+.MuiTypography-root {
+  color: inherit !important;
+}
+
+.MuiTypography-colorTextSecondary {
+  color: #A1A1AA !important;
+}
+
+/* Force input field styling */
+.MuiTextField-root input {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+.MuiTextField-root .MuiInputBase-root {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+.MuiTextField-root .MuiOutlinedInput-root {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+.MuiTextField-root .MuiInputLabel-root {
+  color: #A1A1AA !important;
+}
+
+.MuiTextField-root .MuiInputLabel-root.Mui-focused {
+  color: #4F8CFF !important;
+}
+
+/* Force Select dropdown styling */
+.MuiSelect-root {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+.MuiSelect-select {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+.MuiMenuItem-root {
+  color: #E8E8EA !important;
+  background-color: #252528 !important;
+}
+
+.MuiMenuItem-root:hover {
+  background-color: #2A2A2D !important;
+}
+
+.MuiMenuItem-root.Mui-selected {
+  background-color: rgba(79, 140, 255, 0.15) !important;
+}
+
+/* Force FormControl styling */
+.MuiFormControl-root .MuiInputLabel-root {
+  color: #A1A1AA !important;
+}
+
+.MuiFormControl-root .MuiInputLabel-root.Mui-focused {
+  color: #4F8CFF !important;
+}
+
+/* Force Menu/Dropdown styling */
+.MuiMenu-root .MuiPaper-root {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+  border: 1px solid #3A3A3D !important;
+}
+
+.MuiMenu-list {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+/* Force Autocomplete styling */
+.MuiAutocomplete-root .MuiInputBase-root {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+.MuiAutocomplete-popper .MuiPaper-root {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+  border: 1px solid #3A3A3D !important;
+}
+
+.MuiAutocomplete-option {
+  color: #E8E8EA !important;
+  background-color: #252528 !important;
+}
+
+.MuiAutocomplete-option:hover {
+  background-color: #2A2A2D !important;
+}
+
+.MuiAutocomplete-option[aria-selected="true"] {
+  background-color: rgba(79, 140, 255, 0.15) !important;
+}
+
+/* Force Button text styling */
+.MuiButton-root {
+  color: inherit !important;
+}
+
+.MuiButton-text {
+  color: #E8E8EA !important;
+}
+
+.MuiButton-contained {
+  color: #FFFFFF !important;
+}
+
+/* Force Chip styling */
+.MuiChip-root {
+  color: #E8E8EA !important;
+  background-color: #3A3A3D !important;
+}
+
+.MuiChip-colorPrimary {
+  background-color: #4F8CFF !important;
+  color: #FFFFFF !important;
+}
+
+.MuiChip-colorSecondary {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+}
+
+/* Force all text to be visible */
+* {
+  color: inherit !important;
+}
+
+/* Override any remaining light theme text */
+input, textarea, select, option {
+  color: #E8E8EA !important;
+  background-color: #2A2A2D !important;
+}
+
+/* Force placeholder text */
+input::placeholder, textarea::placeholder {
+  color: #A1A1AA !important;
+}
+
+/* Performance-focused animations */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+.pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
+/* Custom scrollbar - theme-aware */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+}
+
+/* Glass morphism effect - theme-aware */
+.glass {
+  backdrop-filter: blur(20px);
+}
+
+/* Gradient text - theme-aware */
+.gradient-text {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(79, 140, 255, 0.3);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid #4F8CFF;
+  outline-offset: 2px;
+}
+
+/* Selection styles - theme-aware */
+::selection {
+  background: rgba(79, 140, 255, 0.3);
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .aimarketops-card {
+    border-width: 2px;
+  }
+  
+  .aimarketops-button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+} 
+
+/* Remove aggressive global overrides and make them theme-specific */
+
+/* Force any white or light backgrounds to be dark ONLY in dark mode */
+[data-theme="dark"] [style*="background-color: white"], 
+[data-theme="dark"] [style*="background-color: #fff"],
+[data-theme="dark"] [style*="background-color: #ffffff"],
+[data-theme="dark"] [style*="background: white"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background: #ffffff"] {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+/* Force any elements with light backgrounds ONLY in dark mode */
+[data-theme="dark"] .MuiPaper-elevation,
+[data-theme="dark"] .MuiPaper-elevation1,
+[data-theme="dark"] .MuiPaper-elevation2,
+[data-theme="dark"] .MuiPaper-elevation3,
+[data-theme="dark"] .MuiPaper-elevation4,
+[data-theme="dark"] .MuiPaper-elevation5 {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+/* Force disabled text ONLY in dark mode */
+[data-theme="dark"] .Mui-disabled {
+  color: #71717A !important;
+}
+
+/* Force Dialog components ONLY in dark mode */
+[data-theme="dark"] .MuiDialog-paper {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+  border: 1px solid #3A3A3D !important;
+}
+
+[data-theme="dark"] .MuiDialogTitle-root, 
+[data-theme="dark"] .MuiDialogContent-root, 
+[data-theme="dark"] .MuiDialogActions-root {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+/* Force any remaining white or light elements ONLY in dark mode */
+[data-theme="dark"] div[style*="background-color: rgb(255, 255, 255)"],
+[data-theme="dark"] div[style*="background: rgb(255, 255, 255)"],
+[data-theme="dark"] div[style*="backgroundColor: white"],
+[data-theme="dark"] .MuiPaper-root[style*="background"] {
+  background-color: #252528 !important;
+  color: #E8E8EA !important;
+}
+
+/* Force any component that might have inline white styles ONLY in dark mode */
+[data-theme="dark"] * {
+  --mui-palette-background-paper: #252528 !important;
+  --mui-palette-background-default: #1A1A1D !important;
+  --mui-palette-text-primary: #E8E8EA !important;
+  --mui-palette-text-secondary: #A1A1AA !important;
+}
+
+/* Light mode CSS variables */
+[data-theme="light"] * {
+  --mui-palette-background-paper: #F8F9FA !important;
+  --mui-palette-background-default: #FFFFFF !important;
+  --mui-palette-text-primary: #1A1A1D !important;
+  --mui-palette-text-secondary: #5F6368 !important;
+}
+
+/* Ensure all components inherit proper colors based on theme */
+[data-theme="dark"] .MuiGrid-root, 
+[data-theme="dark"] .MuiStack-root, 
+[data-theme="dark"] .MuiContainer-root {
+  color: #E8E8EA !important;
+}
+
+[data-theme="light"] .MuiGrid-root, 
+[data-theme="light"] .MuiStack-root, 
+[data-theme="light"] .MuiContainer-root {
+  color: #1A1A1D !important;
+}
+
+/* AIMarketOps-style cards */
+.aimarketops-card {
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.aimarketops-card:hover {
+  transform: translateY(-1px);
+}
+
+/* AIMarketOps-style buttons */
+.aimarketops-button {
+  background: #4F8CFF;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.aimarketops-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(79, 140, 255, 0.3);
+}
+
+/* AIMarketOps-style inputs */
+.aimarketops-input {
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.aimarketops-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.2);
+}
+
+/* Force any possible light theme remnants */
+.css-* {
+  color: inherit !important;
+} 
+
+/* Light theme - Aggressive override for any remaining dark elements */
+.theme-light *[style*="background-color: rgb(41"],
+.theme-light *[style*="background-color: rgb(37"],
+.theme-light *[style*="background: rgb(41"],
+.theme-light *[style*="background: rgb(37"],
+.theme-light *[style*="background-color:#29"],
+.theme-light *[style*="background-color:#25"],
+.theme-light *[style*="background:#29"],
+.theme-light *[style*="background:#25"],
+[data-theme="light"] *[style*="background-color: rgb(41"],
+[data-theme="light"] *[style*="background-color: rgb(37"],
+[data-theme="light"] *[style*="background: rgb(41"],
+[data-theme="light"] *[style*="background: rgb(37"],
+[data-theme="light"] *[style*="background-color:#29"],
+[data-theme="light"] *[style*="background-color:#25"],
+[data-theme="light"] *[style*="background:#29"],
+[data-theme="light"] *[style*="background:#25"] {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Force override for filter components with dark backgrounds */
+.theme-light .MuiFormControl-root,
+.theme-light .MuiInputBase-formControl,
+.theme-light .MuiSelect-root,
+.theme-light [role="button"],
+.theme-light [role="combobox"],
+[data-theme="light"] .MuiFormControl-root,
+[data-theme="light"] .MuiInputBase-formControl,
+[data-theme="light"] .MuiSelect-root,
+[data-theme="light"] [role="button"],
+[data-theme="light"] [role="combobox"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border: 1px solid #E8EAED !important;
+}
+
+/* Light theme - Search box specific override */
+.theme-light input[placeholder*="Search"],
+.theme-light .MuiInputBase-input,
+[data-theme="light"] input[placeholder*="Search"],
+[data-theme="light"] .MuiInputBase-input {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Force any remaining CSS-in-JS dark styling */
+.theme-light [class*="css-"][class*="MuiFormControl"],
+.theme-light [class*="css-"][class*="MuiSelect"],
+.theme-light [class*="css-"][class*="MuiTextField"],
+.theme-light [class*="css-"][class*="MuiInput"],
+[data-theme="light"] [class*="css-"][class*="MuiFormControl"],
+[data-theme="light"] [class*="css-"][class*="MuiSelect"],
+[data-theme="light"] [class*="css-"][class*="MuiTextField"],
+[data-theme="light"] [class*="css-"][class*="MuiInput"] {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border-color: #E8EAED !important;
+} 
+
+/* Light theme - Navigation sidebar specific fixes */
+.theme-light .MuiDrawer-paper,
+.theme-light .MuiDrawer-root .MuiPaper-root,
+[data-theme="light"] .MuiDrawer-paper,
+[data-theme="light"] .MuiDrawer-root .MuiPaper-root {
+  background-color: #F8F9FA !important;
+  color: #1A1A1D !important;
+  border-color: #E8EAED !important;
+}
+
+.theme-light .MuiList-root .MuiListItem-root,
+.theme-light .MuiList-root .MuiListItemButton-root,
+[data-theme="light"] .MuiList-root .MuiListItem-root,
+[data-theme="light"] .MuiList-root .MuiListItemButton-root {
+  background-color: transparent !important;
+  color: #1A1A1D !important;
+}
+
+.theme-light .MuiList-root .MuiListItemButton-root:hover,
+[data-theme="light"] .MuiList-root .MuiListItemButton-root:hover {
+  background-color: #E8EAED !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Fix navigation subsection styling */
+.theme-light .MuiListItemText-primary,
+.theme-light .MuiListItemText-secondary,
+.theme-light .MuiTypography-body1,
+.theme-light .MuiTypography-body2,
+[data-theme="light"] .MuiListItemText-primary,
+[data-theme="light"] .MuiListItemText-secondary,
+[data-theme="light"] .MuiTypography-body1,
+[data-theme="light"] .MuiTypography-body2 {
+  color: #1A1A1D !important;
+}
+
+.theme-light .MuiListItemIcon-root,
+.theme-light .MuiListItemIcon-root .MuiSvgIcon-root,
+[data-theme="light"] .MuiListItemIcon-root,
+[data-theme="light"] .MuiListItemIcon-root .MuiSvgIcon-root {
+  color: #5F6368 !important;
+} 
+
+/* Light theme - Simple table row hover fix */
+.theme-light .MuiTableRow-root:hover,
+[data-theme="light"] .MuiTableRow-root:hover {
+  background-color: #F1F3F4 !important;
+}
+
+.theme-light .MuiTableRow-root:hover .MuiTableCell-root,
+[data-theme="light"] .MuiTableRow-root:hover .MuiTableCell-root {
+  background-color: #F1F3F4 !important;
+  color: #1A1A1D !important;
+}
+
+/* Light theme - Button text visibility fix */
+.theme-light .MuiButton-root,
+[data-theme="light"] .MuiButton-root {
+  background-color: #FFFFFF !important;
+  color: #1A1A1D !important;
+  border: 1px solid #E8EAED !important;
+}
+
+.theme-light .MuiButton-containedPrimary,
+[data-theme="light"] .MuiButton-containedPrimary {
+  background-color: #FFFFFF !important;
+  color: #4F8CFF !important;
+  border: 1px solid #4F8CFF !important;
+}
+
+/* Light theme - Remove unnecessary borders from navigation */
+.theme-light .MuiListItemButton-root,
+[data-theme="light"] .MuiListItemButton-root {
+  border: none !important;
+  border-left: none !important;
+} 
+
+/* Light theme - Fix navigation subsection padding */
+.theme-light .MuiListItemButton-root[style*="padding-left: 40px"],
+[data-theme="light"] .MuiListItemButton-root[style*="padding-left: 40px"] {
+  padding-left: 16px !important;
+} 

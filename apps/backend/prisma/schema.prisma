@@ -1,0 +1,92 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./../../database.sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  invoices  Invoice[]
+  estimates Estimate[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Estimate {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  items       Json     // [{description, qty, price, tax}]
+  total       Float
+  status      String   // e.g. "Pending", "Accepted"
+  validUntil  DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  items       Json
+  total       Float
+  status      String   // e.g. "Unpaid", "Paid"
+  dueDate     DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  payments    Payment[]
+  reminders   Reminder[] // New relation
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  amount      Float
+  paidAt      DateTime
+  method      String?  // e.g. "Bank Transfer", "Card"
+  reference   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Reminder {
+  id        String   @id @default(uuid())
+  invoiceId String
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  type      String   // e.g. "payment"
+  offset    Int      // Days relative to due date
+  sentAt    DateTime @default(now())
+}
+
+model InventoryItem {
+  id        Int      @id @default(autoincrement())
+  sku       String   @unique
+  name      String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model QuickBooksToken {
+  id          String   @id @default(uuid())
+  accessToken String
+  refreshToken String
+  realmId     String
+  obtainedAt  DateTime @default(now())
+  expiresIn   Int
+  xRefreshTokenExpiresIn Int?
+  tokenType   String
+  idToken     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -1,0 +1,50 @@
+/* MUI DataGrid Custom Styles */
+.MuiDataGrid-root {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+}
+
+.MuiDataGrid-columnHeaders {
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.MuiDataGrid-columnHeader {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.MuiDataGrid-row:hover {
+  background-color: #f1f5f9;
+}
+
+.MuiDataGrid-cell {
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.875rem;
+}
+
+.MuiDataGrid-toolbarContainer {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.MuiDataGrid-footerContainer {
+  border-top: 1px solid #e5e7eb;
+  background-color: #f8fafc;
+}
+
+/* Loading overlay */
+.MuiDataGrid-overlay {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Selection styles */
+.MuiDataGrid-row.Mui-selected {
+  background-color: #eff6ff;
+}
+
+.MuiDataGrid-row.Mui-selected:hover {
+  background-color: #dbeafe;
+}

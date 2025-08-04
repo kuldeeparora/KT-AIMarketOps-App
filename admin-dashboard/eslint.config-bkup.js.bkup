@@ -1,0 +1,170 @@
+import js from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import nextPlugin from '@next/eslint-plugin-next';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import globals from 'globals';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Common configuration for all files
+const commonIgnores = [
+  '**/node_modules/**',
+  '**/.next/**',
+  '**/out/**',
+  '**/build/**',
+  '**/*.d.ts',
+  '**/*.generated.ts',
+  '**/.eslintrc.*',
+  '**/*.config.js',
+  '**/*.config.mjs',
+  '**/*.config.cjs',
+  '**/__tests__/**',
+  '**/__mocks__/**',
+  '**/coverage/**',
+  '**/public/**',
+  '**/.vercel/**',
+  '**/.vscode/**',
+  '**/dist/**',
+  '**/lib/generated/**'
+];
+
+// Base configuration for all files
+export default [
+  // Global ignores
+  {
+    ignores: commonIgnores
+  },
+
+  // JavaScript configuration (applies to .js and .jsx files)
+  {
+    files: ['**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2021
+      },
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    },
+    plugins: {
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      '@next/next': nextPlugin
+    },
+    rules: {
+      // General JavaScript rules
+      'semi': ['warn', 'always'],
+      'quotes': ['warn', 'single', { avoidEscape: true }],
+      'comma-dangle': ['warn', 'always-multiline'],
+      
+      // React rules
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/no-unescaped-entities': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      
+      // Next.js rules
+      '@next/next/no-img-element': 'warn',
+      '@next/next/no-html-link-for-pages': 'warn'
+    },
+    settings: {
+      react: {
+        version: 'detect'
+      },
+      next: {
+        rootDir: ['.']
+      }
+    }
+  },
+
+  // TypeScript configuration (applies to .ts and .tsx files)
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true
+        }
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2021
+      }
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+      'react': reactPlugin,
+      'react-hooks': reactHooksPlugin,
+      '@next/next': nextPlugin
+    },
+    rules: {
+      // TypeScript-specific rules
+      'semi': 'off',
+      'quotes': 'off',
+      'comma-dangle': 'off',
+      
+      /
+      '@typescript-eslint/semi': ['warn', 'always'],
+      '@typescript-eslint/quotes': ['warn', 'single', { avoidEscape: true }],
+      '@typescript-eslint/comma-dangle': ['warn', 'always-multiline'],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      /
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/no-unescaped-entities': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      /
+      '@next/next/no-img-element': 'warn',
+      '@next/next/no-html-link-for-pages': 'warn'
+    },
+    settings: {
+      react: {
+        version: 'detect'
+      },
+      next: {
+        rootDir: ['.']
+      },
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true
+          project: './tsconfig.json'
+        }
+      }
+    }
+  },
+  
+  /
+  {
+    files: ['**/__tests__/**/*', '**/*.{spec,test}.{js,jsx,ts,tsx}'],
+    env: {
+      'jest/globals': true
+    },
+    rules: {
+      // Test-specific rules
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }]
+    }
+  }
+];

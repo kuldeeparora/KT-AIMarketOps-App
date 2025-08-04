@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: aimarketops-admin-dashboard
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_BASE_URL
+        fromGroup: aimarketops-env
+      - key: SELLERDYNAMICS_API_URL
+        fromGroup: aimarketops-env
+      - key: SELLERDYNAMICS_API_KEY
+        fromGroup: aimarketops-env
+      - key: SELLERDYNAMICS_RETAILER_ID
+        fromGroup: aimarketops-env
+      - key: SELLERDYNAMICS_LOGIN
+        fromGroup: aimarketops-env
+      - key: SELLERDYNAMICS_PASSWORD
+        fromGroup: aimarketops-env
+      - key: SHOPIFY_SHOP
+        fromGroup: aimarketops-env
+      - key: SHOPIFY_ACCESS_TOKEN
+        fromGroup: aimarketops-env
+    disk:
+      name: data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+    autoDeploy: true
+    rootDir: admin-dashboard
+
+databases:
+  - name: aimarketops-postgres
+    databaseName: aimarketops
+    user: aimarketops_user
+    plan: starter
+    region: oregon
+    postgresMajorVersion: 15 

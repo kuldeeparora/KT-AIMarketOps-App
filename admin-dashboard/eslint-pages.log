@@ -1,0 +1,48 @@
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/real-sellerdynamics-database.js
+  101:69  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/reports/generate.js
+  26:73  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/sellerdynamics/comprehensive.js
+  14:66  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/sellerdynamics/relationships-v2.js
+  89:80  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/sellerdynamics/relationships.js
+  28:20  error  Parsing error: Unexpected token &
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/sellerdynamics/sync-all.js
+  3:66  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/shopify-inventory/update.js
+  12:66  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/suppliers/integration.js
+  26:87  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/system/health.js
+  2:72  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/testing/run-tests.js
+  2:72  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/vendor-management/vendors.js
+  2:72  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/api/warehouses/locations.js
+  26:75  error  Parsing error: Unexpected token ,
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/inventory/optimization.js
+  5:5  error  Parsing error: Unexpected token <
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/performance.js
+  5:5  error  Parsing error: Unexpected token <
+
+/Users/kuldeep.arora/KT/shopify/KT/admin-dashboard/pages/search/intelligent-search.js
+  5:5  error  Parsing error: Unexpected token <
+
+✖ 15 problems (15 errors, 0 warnings)
+

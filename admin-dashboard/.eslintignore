@@ -1,0 +1,269 @@
+# Backup directories
+backup-*/
+**/backup-*/
+
+# Configuration files with parsing issues
+postcss.config.js
+tailwind.config.js
+jest.config.js
+
+# Test and utility scripts (only actual test files)
+test-*.js
+*test*.js
+*Test*.js
+
+# Exclude main application files from test patterns
+!pages/test-mui-migration.jsx
+!pages/test-selection.tsx
+!components/test-datagrid.tsx
+
+# Fix scripts
+fix-*.js
+*fix*.js
+*Fix*.js
+
+# Comprehensive scripts
+comprehensive-*.js
+final-*.js
+simple-*.js
+aggressive-*.js
+
+# Quick test files
+quick-*.js
+
+# Temporary fix files (not part of main application)
+fix-all-eslint-issues.js
+fix-critical-errors.js
+fix-import-statements.js
+fix-imports-simple.js
+restore-all-features.js
+restore-*.js
+fix-*.js
+
+# Root level temporary files
+/fix-*.js
+/restore-*.js
+/comprehensive-*.js
+/final-*.js
+/simple-*.js
+/aggressive-*.js
+
+# Specific temporary files
+fix-all-eslint-issues.js
+fix-critical-errors.js
+fix-import-statements.js
+fix-imports-simple.js
+restore-all-features.js
+
+# Node modules
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Environment files
+.env*
+!.env.example
+
+# Logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Corrupted files that need manual fixing
+__tests__/
+components/inventory-intelligence/
+components/ui/
+context/
+hooks/
+lib/ai/
+lib/services/
+utils/
+types/
+scripts/
+
+# Storybook files
+*.stories.js
+*.stories.tsx
+*.stories.jsx
+
+# Test files
+*.test.js
+*.test.ts
+*.test.tsx
+*.test.jsx
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Temporary files
+*.tmp
+*.temp
+
+# Generated files
+*.generated.js
+*.generated.ts
+*.generated.tsx
+
+# Vendor files
+vendor/
+
+# Third party libraries
+third-party/
+
+# Documentation
+docs/
+*.md
+
+# Configuration files
+*.config.js
+*.config.ts
+*.config.json
+
+# Package files
+package.json
+package-lock.json
+yarn.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Deployment files
+.vercel
+.netlify
+.now
+
+# Cache directories
+.cache/
+.parcel-cache/
+
+# TypeScript declaration files
+*.d.ts
+
+# Generated TypeScript files
+*.generated.ts
+
+# Build artifacts
+build/
+dist/
+out/
+.next/
+.nuxt/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime files
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port 

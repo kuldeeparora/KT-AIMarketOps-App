@@ -1,0 +1,534 @@
+import React, { useState } from 'react';
+import Head from 'next/head';
+import Layout from '../components/Layout';
+
+export default function Settings() {
+  const [activeTab, setActiveTab] = useState('general');
+  const [settings, setSettings] = useState({
+    general: {
+      companyName: 'Kent Traders',
+      email: 'admin@kenttraders.co.uk',
+      phone: '+44 123 456 7890',
+      address: '123 High Street, Kent, UK',
+      timezone: 'Europe/London',
+      currency: 'GBP',
+      language: 'en',
+    },
+    notifications: {
+      emailNotifications: true,
+      orderNotifications: true,
+      inventoryAlerts: true,
+      lowStockThreshold: 10,
+      dailyReports: true,
+      weeklyReports: true,
+    },
+    integrations: {
+      shopify: {,
+        enabled: true,
+        storeUrl: 'kent-traders.myshopify.com',
+        apiKey: '••••••••••••••••',
+        webhookUrl: 'https://kenttraders.co.uk/webhooks/shopify',
+      },
+      sellerdynamics: {,
+        enabled: true,
+        endpoint: 'https://api.sellerdynamics.com',
+        retailerId: 'KT123456',
+        encryptedLogin: '••••••••••••••••',
+      },
+      quickbooks: {,
+        enabled: false,
+        companyId: &apos;',
+        accessToken: '',
+      },
+    },
+    security: {,
+      twoFactorAuth: false,
+      sessionTimeout: 30,
+      passwordExpiry: 90,
+      failedLoginAttempts: 5,
+      ipWhitelist: [],
+    },
+    appearance: {,
+      theme: 'light',
+      sidebarCollapsed: false,
+      compactMode: false,
+      showAnimations: true,
+    },
+  });
+
+  const tabs = [
+    { id: 'general', name: 'General', icon: '⚙️' },
+    { id: 'notifications', name: 'Notifications', icon: '🔔' },
+    { id: 'integrations', name: 'Integrations', icon: '🔗' },
+    { id: 'security', name: 'Security', icon: '🔒' },
+    { id: 'appearance', name: 'Appearance', icon: '🎨' },
+  ];
+
+  const handleSettingChange = (category, key, value) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {,
+        ...prev[category],
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleSave = () => {
+    // Mock save functionality
+    console.log('Saving settings:', settings);
+    alert('Settings saved successfully!');
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Settings - Kent Traders Admin Dashboard</title>
+        <meta name="description" content="System settings and configuration" />
+      </Head>
+      
+      <Layout>
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm: px-6 lg:px-8">,
+            <div className="flex justify-between items-center py-6">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Settings
+                </h1>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button className="btn-secondary">
+                  Reset to Default
+                </button>
+                <button className="btn-primary" onClick={handleSave}>
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 sm: px-6 lg:px-8 py-8">,
+          {/* Tab Navigation */}
+          <div className="border-b border-gray-200 mb-8">
+            <nav className="-mb-px flex space-x-8">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="mr-2">{tab.icon}</span>
+                  {tab.name}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* General Settings */}
+          {activeTab === 'general' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Company Information</h2>
+                <div className="grid grid-cols-1 md: grid-cols-2 gap-6">,
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                    <input
+                      type="text"
+                      value={settings.general.companyName}
+                      onChange={(e) => handleSettingChange('general', 'companyName', e.target.value)}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input
+                      type="email"
+                      value={settings.general.email}
+                      onChange={(e) => handleSettingChange('general', 'email', e.target.value)}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <input
+                      type="tel"
+                      value={settings.general.phone}
+                      onChange={(e) => handleSettingChange('general', 'phone', e.target.value)}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                    <input
+                      type="text"
+                      value={settings.general.address}
+                      onChange={(e) => handleSettingChange('general', 'address', e.target.value)}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                    <select
+                      value={settings.general.timezone}
+                      onChange={(e) => handleSettingChange('general', 'timezone', e.target.value)}
+                      className="input"
+                    >
+                      <option value="Europe/London">Europe/London (GMT)</option>
+                      <option value="Europe/Paris">Europe/Paris (CET)</option>
+                      <option value="America/New_York">America/New_York (EST)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                    <select
+                      value={settings.general.currency}
+                      onChange={(e) => handleSettingChange('general', 'currency', e.target.value)}
+                      className="input"
+                    >
+                      <option value="GBP">GBP (£)</option>
+                      <option value="EUR">EUR (€)</option>
+                      <option value="USD">USD ($)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Notification Settings */}
+          {activeTab === 'notifications' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Email Notifications</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Email Notifications</h3>
+                      <p className="text-sm text-gray-500">Receive notifications via email</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.notifications.emailNotifications}
+                      onChange={(e) => handleSettingChange('notifications', 'emailNotifications', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Order Notifications</h3>
+                      <p className="text-sm text-gray-500">Get notified of new orders</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.notifications.orderNotifications}
+                      onChange={(e) => handleSettingChange('notifications', 'orderNotifications', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Inventory Alerts</h3>
+                      <p className="text-sm text-gray-500">Get notified of low stock items</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.notifications.inventoryAlerts}
+                      onChange={(e) => handleSettingChange('notifications', 'inventoryAlerts', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Low Stock Threshold</label>
+                    <input
+                      type="number"
+                      value={settings.notifications.lowStockThreshold}
+                      onChange={(e) => handleSettingChange('notifications', 'lowStockThreshold', parseInt(e.target.value))}
+                      className="input w-32"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Report Scheduling</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Daily Reports</h3>
+                      <p className="text-sm text-gray-500">Receive daily summary reports</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.notifications.dailyReports}
+                      onChange={(e) => handleSettingChange('notifications', 'dailyReports', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Weekly Reports</h3>
+                      <p className="text-sm text-gray-500">Receive weekly summary reports</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.notifications.weeklyReports}
+                      onChange={(e) => handleSettingChange('notifications', 'weeklyReports', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Integration Settings */}
+          {activeTab === 'integrations' && (
+            <div className="space-y-6">
+              {/* Shopify Integration */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">Shopify Integration</h2>
+                  <input
+                    type="checkbox"
+                    checked={settings.integrations.shopify.enabled}
+                    onChange={(e) => handleSettingChange('integrations', 'shopify', {
+                      ...settings.integrations.shopify,
+                      enabled: e.target.checked,
+                    })}
+                    className="rounded"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md: grid-cols-2 gap-6">,
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Store URL</label>
+                    <input
+                      type="text"
+                      value={settings.integrations.shopify.storeUrl}
+                      onChange={(e) => handleSettingChange('integrations', 'shopify', {
+                        ...settings.integrations.shopify,
+                        storeUrl: e.target.value,
+                      })}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">API Key</label>
+                    <input
+                      type="password"
+                      value={settings.integrations.shopify.apiKey}
+                      onChange={(e) => handleSettingChange('integrations', 'shopify', {
+                        ...settings.integrations.shopify,
+                        apiKey: e.target.value,
+                      })}
+                      className="input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* SellerDynamics Integration */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">SellerDynamics Integration</h2>
+                  <input
+                    type="checkbox"
+                    checked={settings.integrations.sellerdynamics.enabled}
+                    onChange={(e) => handleSettingChange('integrations', 'sellerdynamics', {
+                      ...settings.integrations.sellerdynamics,
+                      enabled: e.target.checked,
+                    })}
+                    className="rounded"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md: grid-cols-2 gap-6">,
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Endpoint</label>
+                    <input
+                      type="text"
+                      value={settings.integrations.sellerdynamics.endpoint}
+                      onChange={(e) => handleSettingChange('integrations', 'sellerdynamics', {
+                        ...settings.integrations.sellerdynamics,
+                        endpoint: e.target.value,
+                      })}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Retailer ID</label>
+                    <input
+                      type="text"
+                      value={settings.integrations.sellerdynamics.retailerId}
+                      onChange={(e) => handleSettingChange('integrations', 'sellerdynamics', {
+                        ...settings.integrations.sellerdynamics,
+                        retailerId: e.target.value,
+                      })}
+                      className="input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* QuickBooks Integration */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">QuickBooks Integration</h2>
+                  <input
+                    type="checkbox"
+                    checked={settings.integrations.quickbooks.enabled}
+                    onChange={(e) => handleSettingChange('integrations', 'quickbooks', {
+                      ...settings.integrations.quickbooks,
+                      enabled: e.target.checked,
+                    })}
+                    className="rounded"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md: grid-cols-2 gap-6">,
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Company ID</label>
+                    <input
+                      type="text"
+                      value={settings.integrations.quickbooks.companyId}
+                      onChange={(e) => handleSettingChange('integrations', 'quickbooks', {
+                        ...settings.integrations.quickbooks,
+                        companyId: e.target.value,
+                      })}
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Access Token</label>
+                    <input
+                      type="password"
+                      value={settings.integrations.quickbooks.accessToken}
+                      onChange={(e) => handleSettingChange('integrations', 'quickbooks', {
+                        ...settings.integrations.quickbooks,
+                        accessToken: e.target.value,
+                      })}
+                      className="input"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Security Settings */}
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Security Settings</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Two-Factor Authentication</h3>
+                      <p className="text-sm text-gray-500">Add an extra layer of security</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.security.twoFactorAuth}
+                      onChange={(e) => handleSettingChange('security', 'twoFactorAuth', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                    <input
+                      type="number"
+                      value={settings.security.sessionTimeout}
+                      onChange={(e) => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
+                      className="input w-32"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Password Expiry (days)</label>
+                    <input
+                      type="number"
+                      value={settings.security.passwordExpiry}
+                      onChange={(e) => handleSettingChange('security', 'passwordExpiry', parseInt(e.target.value))}
+                      className="input w-32"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Failed Login Attempts</label>
+                    <input
+                      type="number"
+                      value={settings.security.failedLoginAttempts}
+                      onChange={(e) => handleSettingChange('security', 'failedLoginAttempts', parseInt(e.target.value))}
+                      className="input w-32"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Appearance Settings */}
+          {activeTab === 'appearance' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Appearance Settings</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Theme</label>
+                    <select
+                      value={settings.appearance.theme}
+                      onChange={(e) => handleSettingChange('appearance', 'theme', e.target.value)}
+                      className="input"
+                    >
+                      <option value="light">Light</option>
+                      <option value="dark">Dark</option>
+                      <option value="auto">Auto</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Sidebar Collapsed</h3>
+                      <p className="text-sm text-gray-500">Start with sidebar collapsed</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.appearance.sidebarCollapsed}
+                      onChange={(e) => handleSettingChange('appearance', 'sidebarCollapsed', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Compact Mode</h3>
+                      <p className="text-sm text-gray-500">Use compact layout</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.appearance.compactMode}
+                      onChange={(e) => handleSettingChange('appearance', 'compactMode', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">Show Animations</h3>
+                      <p className="text-sm text-gray-500">Enable UI animations</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.appearance.showAnimations}
+                      onChange={(e) => handleSettingChange('appearance', 'showAnimations', e.target.checked)}
+                      className="rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </Layout>
+    </>
+  );
+}

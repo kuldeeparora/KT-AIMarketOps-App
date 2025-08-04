@@ -1,0 +1,106 @@
+// admin-dashboard/prisma/schema-ai-additions.prisma
+// Add these to your existing schema.prisma
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  price         Decimal  @db.Decimal(10, 2)
+  stock         Int
+  category      Category @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  
+  // AI-enhanced fields
+  embedding     Float[]? // For vector similarity search
+  aiTags        String[]
+  aiDescription String?
+  demandScore   Float?
+  
+  // Metadata
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  orderItems    OrderItem[]
+  priceHistory  PriceHistory[]
+  stockMovements StockMovement[]
+  
+  @@index([name])
+  @@index([categoryId])
+}
+
+model AIInteraction {
+  id              String   @id @default(cuid())
+  userId          String
+  interactionType String
+  input           Json
+  output          Json
+  model           String
+  tokens          Int
+  latency         Int
+  feedback        Json?
+  
+  // LangSmith integration
+  langsmithRunId  String?
+  langsmithTrace  Json?
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([interactionType])
+  @@index([createdAt])
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  price     Decimal  @db.Decimal(10, 2)
+  reason    String?
+  createdAt DateTime @default(now())
+  
+  @@index([productId])
+  @@index([createdAt])
+}
+
+model StockMovement {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  type        String   // 'in' or 'out'
+  reason      String?
+  orderId     String?
+  createdAt   DateTime @default(now())
+  
+  @@index([productId])
+  @@index([createdAt])
+}
+
+model AIModel {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  type        String   // 'llm', 'embedding', 'classification', 'regression'
+  provider    String   // 'openai', 'anthropic', 'local'
+  version     String
+  config      Json
+  performance Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  source      String
+  type        String   // 'product', 'documentation', 'customer', 'order'
+  content     String   @db.Text
+  embedding   Float[]?
+  metadata    Json?
+  indexed     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([type])
+  @@index([indexed])
+}
