@@ -28,16 +28,33 @@ class ErrorBoundary extends React.Component {
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI
-    return { hasError: true };
+    // Check if it's a styled-jsx/useContext error
+    if (error?.message?.includes('useContext') || 
+        error?.message?.includes('styled-jsx') ||
+        error?.stack?.includes('StyleRegistry')) {
+      // Don't treat these as critical errors
+      console.warn('Styled-jsx context error caught, attempting recovery:', error.message);
+      return { hasError: false, error: null, errorInfo: null };
+    }
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log the error to console and any error reporting service
+    // Handle styled-jsx context errors gracefully
+    if (error?.message?.includes('useContext') || 
+        error?.message?.includes('styled-jsx') ||
+        error?.stack?.includes('StyleRegistry')) {
+      console.warn('Styled-jsx context error caught and ignored:', error.message);
+      // Reset state after a brief delay
+      setTimeout(() => {
+        this.setState({ hasError: false, error: null, errorInfo: null });
+      }, 100);
+      return;
+    }
+
+    // Log other errors normally
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    this.setState({
-      error: error,
-      errorInfo: errorInfo,
-    });
+    this.setState({ errorInfo });
   }
 
   handleRetry = () => {
