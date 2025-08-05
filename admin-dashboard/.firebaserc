@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "kt-aimarketops-app"
+    "default": "kt-aimarketops",
+    "production": "kt-aimarketops",
+    "staging": "kt-aimarketops-staging"
   }
 }

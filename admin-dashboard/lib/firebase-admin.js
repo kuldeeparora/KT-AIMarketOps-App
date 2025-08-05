@@ -3,10 +3,10 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 
-// Firebase Admin configuration for KT-AIMarketOps-App
+// Firebase Admin configuration for KT-AIMarketOps
 const firebaseAdminConfig = {
   type: 'service_account',
-  project_id: process.env.FIREBASE_PROJECT_ID || 'kt-aimarketops-app',
+  project_id: process.env.FIREBASE_PROJECT_ID || 'kt-aimarketops',
   private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
   private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   client_email: process.env.FIREBASE_CLIENT_EMAIL,
@@ -21,7 +21,7 @@ const firebaseAdminConfig = {
 if (!getApps().length) {
   initializeApp({
     credential: cert(firebaseAdminConfig),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'kt-aimarketops-app.appspot.com'
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'kt-aimarketops.appspot.com'
   });
 }
 

@@ -1,7 +1,7 @@
 {
-  "name": "aimarketops",
+  "name": "kt-aimarketops-admin",
   "version": "1.0.0",
-  "description": "AIMarketOps - AI-Powered Market Operations Platform",
+  "description": "KT-AIMarketOps - AI-Powered Market Operations Platform",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
@@ -11,7 +11,8 @@
     "export": "next build && next export",
     "deploy:firebase": "npm run build && firebase deploy",
     "deploy:firebase:hosting": "npm run build && firebase deploy --only hosting",
-    "firebase:init": "firebase init"
+    "firebase:init": "firebase init",
+    "firebase:use": "firebase use kt-aimarketops"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

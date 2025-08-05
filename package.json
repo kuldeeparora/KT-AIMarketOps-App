@@ -1,5 +1,5 @@
 {
-  "name": "kt-aimarketops-app",
+  "name": "kt-aimarketops",
   "version": "2.0.0",
   "description": "Advanced AI-Powered Market Operations Platform for Kent Traders",
   "private": true,
@@ -16,7 +16,11 @@
     "clean": "npm run clean --workspaces",
     "deploy": "vercel --prod",
     "deploy:preview": "vercel",
-    "deploy:vercel": "node scripts/deploy-vercel.js",
+    "deploy:firebase": "cd admin-dashboard && npm run build && firebase deploy",
+    "deploy:firebase:hosting": "cd admin-dashboard && npm run build && firebase deploy --only hosting",
+    "deploy:production": "node scripts/deploy-production.js all",
+    "deploy:vercel:prod": "node scripts/deploy-production.js vercel",
+    "deploy:firebase:prod": "node scripts/deploy-production.js firebase",
     "setup": "npm install && npm run build",
     "start": "cd admin-dashboard && npm start"
   },
