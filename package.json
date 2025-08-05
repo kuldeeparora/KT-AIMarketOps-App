@@ -1,0 +1,44 @@
+{
+  "name": "kt-aimarketops-app",
+  "version": "2.0.0",
+  "description": "Advanced AI-Powered Market Operations Platform for Kent Traders",
+  "private": true,
+  "workspaces": [
+    "admin-dashboard",
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "cd admin-dashboard && npm run dev",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces",
+    "deploy": "firebase deploy",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "setup": "npm install && npm run build",
+    "start": "cd admin-dashboard && npm start"
+  },
+  "keywords": [
+    "ai",
+    "market-operations",
+    "inventory-management",
+    "shopify",
+    "sellerdynamics",
+    "analytics",
+    "business-intelligence"
+  ],
+  "author": "Kent Traders",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
