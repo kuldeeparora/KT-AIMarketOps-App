@@ -27,14 +27,13 @@ export default NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // For demo purposes, accept any email/password
-        // In production, you would validate against your database
-        if (credentials.email && credentials.password) {
+        // Add your credential validation logic here
+        if (credentials.email === "admin@kenttraders.com" && credentials.password === "password") {
           return {
-            id: '1',
-            email: credentials.email,
-            name: credentials.email.split('@')[0],
-            image: null
+            id: 1,
+            name: "Admin User",
+            email: "admin@kenttraders.com",
+            role: "ADMIN"
           };
         }
         return null;

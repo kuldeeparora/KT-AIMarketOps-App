@@ -26,7 +26,8 @@
     "start": "cd admin-dashboard && npm start",
     "build:firebase": "cd admin-dashboard && npm run build:firebase",
     "build:vercel": "cd admin-dashboard && npm run build:vercel",
-    "fix:all": "node scripts/fix-all-issues.js"
+    "fix:all": "node scripts/fix-all-issues.js",
+    "fix:dev": "cd admin-dashboard && node scripts/fix-dev-config.js"
   },
   "keywords": [
     "ai",

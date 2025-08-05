@@ -4,11 +4,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // For development and Vercel deployment
+  // For development and Vercel deployment (with API routes)
   output: 'standalone',
   experimental: {
     outputFileTracingRoot: undefined,
   }
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

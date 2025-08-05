@@ -5,19 +5,35 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   // For development and Vercel deployment (with API routes)
-  // output: 'standalone',
-  // experimental: {
-  //   outputFileTracingRoot: undefined,
-  // }
-  
-  // For Firebase static hosting (comment out for development)
-  output: 'export',
-  trailingSlash: true,
-  images: {
-    unoptimized: true
-  },
+  output: 'standalone',
   experimental: {
-    appDir: false
+    outputFileTracingRoot: undefined,
+  },
+  // Add security headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          }
+        ]
+      }
+    ];
   }
 };
 
