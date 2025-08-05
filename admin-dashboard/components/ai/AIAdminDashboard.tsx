@@ -61,7 +61,7 @@ interface AISystem {
   name: string;
   description: string;
   status: SystemStatus;
-  metrics: any;
+  metrics: Record<string, number>;
 }
 
 interface AIAdminDashboardProps {
@@ -74,7 +74,7 @@ const AIAdminDashboard: React.FC<AIAdminDashboardProps> = ({ selectedSystem: ini
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
-  const [testResults, setTestResults] = useState<any>(null);
+  const [testResults, setTestResults] = useState<{ systemId: string; timestamp: string; results: { status: string; testsRun: number; testsPassed: number; responseTime: number; accuracy: number } } | null>(null);
 
   // Mock data for demonstration - replace with actual API calls
   const mockSystems: AISystem[] = [
@@ -292,7 +292,7 @@ const AIAdminDashboard: React.FC<AIAdminDashboardProps> = ({ selectedSystem: ini
           <Chip
             icon={getStatusIcon(system.status.status)}
             label={system.status.status}
-            color={getStatusColor(system.status.status) as any}
+            color={getStatusColor(system.status.status) as 'success' | 'warning' | 'error' | 'default'}
             size="small"
           />
         </Box>
@@ -390,7 +390,7 @@ const AIAdminDashboard: React.FC<AIAdminDashboardProps> = ({ selectedSystem: ini
             <Chip
               icon={getStatusIcon(system.status.status)}
               label={system.status.status}
-              color={getStatusColor(system.status.status) as any}
+                              color={getStatusColor(system.status.status) as 'success' | 'warning' | 'error' | 'default'}
             />
           </Box>
         </DialogTitle>

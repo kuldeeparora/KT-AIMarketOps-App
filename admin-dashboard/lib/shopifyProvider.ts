@@ -3,7 +3,7 @@
  */
 
 import {
-  InventoryProvider, InventoryItem
+  InventoryProvider, InventoryItem, InventoryQueryOptions, PaginatedResult
 } from '../types/inventory';
 
 export interface ShopifyProviderConfig {
@@ -33,13 +33,22 @@ export class ShopifyProvider implements InventoryProvider {
     return true;
   }
 
-  async getStockLevels(): Promise<any> {
+  async getStockLevels(options?: InventoryQueryOptions): Promise<PaginatedResult<InventoryItem>> {
     const inventory = await this.getInventory();
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const total = inventory.length;
+    const totalPages = Math.ceil(total / limit);
+    
     return {
       data: inventory,
-    total: inventory.length,
-    success: true
-  };
+      page,
+      totalPages,
+      total,
+      limit,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1
+    };
   }
 
   async testConnection(): Promise<boolean> {

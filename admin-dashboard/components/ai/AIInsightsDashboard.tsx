@@ -206,28 +206,28 @@ export default function AIInsightsDashboard() {
           <Grid item xs={6} md={3}>
             <Chip
               label="RAG System"
-              color={getStatusColor(aiStatus.rag) as any}
+              color={getStatusColor(aiStatus.rag) as 'success' | 'error'}
               icon={<AIIcon />}
             />
           </Grid>
           <Grid item xs={6} md={3}>
             <Chip
               label="AI Agents"
-              color={getStatusColor(aiStatus.agents) as any}
+              color={getStatusColor(aiStatus.agents) as 'success' | 'error'}
               icon={<AIIcon />}
             />
           </Grid>
           <Grid item xs={6} md={3}>
             <Chip
               label="MCP Server"
-              color={getStatusColor(aiStatus.mcp) as any}
+              color={getStatusColor(aiStatus.mcp) as 'success' | 'error'}
               icon={<AIIcon />}
             />
           </Grid>
           <Grid item xs={6} md={3}>
             <Chip
               label="LangSmith"
-              color={getStatusColor(aiStatus.langsmith) as any}
+              color={getStatusColor(aiStatus.langsmith) as 'success' | 'error'}
               icon={<AIIcon />}
             />
           </Grid>
@@ -254,7 +254,7 @@ export default function AIInsightsDashboard() {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Chip
                     label={insight.trend === 'up' ? '↗ Improving' : insight.trend === 'down' ? '↘ Declining' : '→ Stable'}
-                    color={getTrendColor(insight.trend) as any}
+                    color={getTrendColor(insight.trend) as 'success' | 'error' | 'warning'}
                     size="small"
                   />
                   <Typography variant="caption" sx={{ ml: 1 }}>

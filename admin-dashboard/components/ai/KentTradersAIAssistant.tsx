@@ -25,7 +25,7 @@ export default function KentTradersAIAssistant() {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<AIResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [aiStatus, setAiStatus] = useState<any>(null);
+  const [aiStatus, setAiStatus] = useState<{ groq?: { status: string } } | null>(null);
 
   // Test AI connectivity on component mount
   useEffect(() => {

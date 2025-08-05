@@ -2,38 +2,54 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-// AIMarketOps theme context
-const AIMarketOpsThemeContext = createContext();
+// AIMarketOps theme context with default value
+const AIMarketOpsThemeContext = createContext({
+  mode: 'dark',
+  toggleTheme: () => {},
+  setTheme: () => {}
+});
 
 export const useAIMarketOpsTheme = () => {
   const context = useContext(AIMarketOpsThemeContext);
   if (!context) {
-    throw new Error('useAIMarketOpsTheme must be used within a AIMarketOpsThemeProvider');
+    // Return default theme instead of throwing error to prevent crashes
+    console.warn('useAIMarketOpsTheme called outside of AIMarketOpsThemeProvider, using default theme');
+    return {
+      mode: 'dark',
+      toggleTheme: () => {},
+      setTheme: () => {}
+    };
   }
   return context;
 };
 
 export const AIMarketOpsThemeProvider = ({ children }) => {
   // Initialize theme from localStorage or default to 'dark'
-  const [mode, setMode] = useState(() => {
+  const [mode, setMode] = useState('dark');
+  const [isClient, setIsClient] = useState(false);
+
+  // Handle client-side mounting
+  useEffect(() => {
+    setIsClient(true);
     if (typeof window !== 'undefined') {
       const savedMode = localStorage.getItem('aimarketops-theme');
-      return savedMode || 'dark';
+      if (savedMode && (savedMode === 'dark' || savedMode === 'light')) {
+        setMode(savedMode);
+      }
     }
-    return 'dark';
-  });
+  }, []);
 
   // Sync theme with localStorage on mount and changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isClient && typeof window !== 'undefined') {
       localStorage.setItem('aimarketops-theme', mode);
       console.log(`Theme changed to: ${mode}`);
     }
-  }, [mode]);
+  }, [mode, isClient]);
 
   // Update document classes when mode changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (isClient && typeof window !== 'undefined') {
       // Remove existing theme classes
       document.documentElement.classList.remove('theme-dark', 'theme-light');
       document.body.classList.remove('theme-dark', 'theme-light');
@@ -51,7 +67,7 @@ export const AIMarketOpsThemeProvider = ({ children }) => {
       
       console.log(`Theme changed to: ${mode}`);
     }
-  }, [mode]);
+  }, [mode, isClient]);
 
   // AIMarketOps-inspired themes
   const aimarketopsDarkTheme = createTheme({
@@ -768,23 +784,7 @@ export const AIMarketOpsThemeProvider = ({ children }) => {
           },
         },
       },
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px',
-              backgroundColor: '#FFFFFF',
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#4F8CFF',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#4F8CFF',
-                borderWidth: '2px',
-              },
-            },
-          },
-        },
-      },
+
       // Paper components for light theme
       MuiPaper: {
         styleOverrides: {
@@ -848,32 +848,7 @@ export const AIMarketOpsThemeProvider = ({ children }) => {
           },
         },
       },
-      // Input components for light theme
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: '#FFFFFF',
-              color: '#1A1A1D',
-              '& fieldset': {
-                borderColor: '#E8EAED',
-              },
-              '&:hover fieldset': {
-                borderColor: '#4F8CFF',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#4F8CFF',
-              },
-            },
-            '& .MuiInputLabel-root': {
-              color: '#5F6368',
-              '&.Mui-focused': {
-                color: '#4F8CFF',
-              },
-            },
-          },
-        },
-      },
+
       MuiOutlinedInput: {
         styleOverrides: {
           root: {

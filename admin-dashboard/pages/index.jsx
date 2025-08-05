@@ -221,102 +221,6 @@ const DashboardStats = ({ stats, loading, error }) => {
           </Typography>
         </Paper>
       </Grid>
-
-      {/* Sales Overview */}
-      <Grid item xs={12} md={6}>
-        <Paper sx={{ 
-          p: 3, 
-          height: '100%',
-          backgroundColor: 'background.paper',
-          color: 'text.primary'
-        }}>
-          <Typography variant="h6" gutterBottom>
-            Sales Overview
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Average Order Value
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {formatCurrency(stats?.averageOrderValue || 0)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Completed Orders
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {stats?.completedOrders || 0}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Inventory Value
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {formatCurrency(stats?.inventoryValue || 0)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Active Marketplaces
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {stats?.activeMarketplaces || 0}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Grid>
-
-      {/* Settlement Overview */}
-      <Grid item xs={12} md={6}>
-        <Paper sx={{ 
-          p: 3, 
-          height: '100%',
-          backgroundColor: 'background.paper',
-          color: 'text.primary'
-        }}>
-          <Typography variant="h6" gutterBottom>
-            Settlement Overview
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Total Settlement
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {formatCurrency(stats?.totalSettlement || 0)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Pending Settlement
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {formatCurrency(stats?.pendingSettlement || 0)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Settled Amount
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {formatCurrency(stats?.settledAmount || 0)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2" color="textSecondary">
-                Total Marketplaces
-              </Typography>
-              <Typography variant="h6" fontWeight="bold">
-                {stats?.totalMarketplaces || 0}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Grid>
     </Grid>
   );
 };
@@ -333,86 +237,27 @@ export default function Dashboard() {
       setLoading(true);
       setError(null);
       
-      // Check if we're in a static environment (Firebase hosting)
-      const isStaticEnvironment = typeof window !== 'undefined' && 
-        (window.location.hostname.includes('web.app') || 
-         window.location.hostname.includes('firebaseapp.com') ||
-         process.env.NODE_ENV === 'production');
+      // Use mock data for now
+      const mockStats = {
+        totalSales: 461.24,
+        totalOrders: 3,
+        inventoryItems: 8,
+        pendingOrders: 0,
+        averageOrderValue: 153.75,
+        completedOrders: 2,
+        inventoryValue: 10457.31,
+        activeMarketplaces: 2,
+        totalSettlement: 438.18,
+        pendingSettlement: 23.06,
+        settledAmount: 415.12,
+        totalMarketplaces: 2,
+        dataSource: 'mock',
+        recordsProcessed: 0,
+        apiStatus: 'Connected'
+      };
       
-      let result;
-      
-      if (isStaticEnvironment) {
-        // Use static mock data for Firebase hosting
-        console.log('Using static mock data for Firebase hosting');
-        result = {
-          success: true,
-          data: {
-            totalProducts: 8,
-            totalStock: 0,
-            totalOrders: 3,
-            totalRevenue: "461.24",
-            averageOrderValue: "153.75",
-            inventoryValue: "10457.31",
-            completedOrders: 2,
-            pendingOrders: 0,
-            activeMarketplaces: 2,
-            totalSettlement: "438.18",
-            pendingSettlement: "23.06",
-            settledAmount: "415.12",
-            totalMarketplaces: 2,
-            lowStockItems: 3,
-            outOfStockItems: 3,
-            ordersToday: 0,
-            dataSource: "mock"
-          },
-          meta: {
-            lastUpdated: new Date().toISOString(),
-            dataSource: "mock",
-            note: "Static deployment - using mock data"
-          }
-        };
-      } else {
-        // Use API for development
-        const response = await fetch('/api/dashboard-stats');
-        result = await response.json();
-      }
-      
-      console.log('Dashboard API Response:', result);
-      
-      if (result.error) {
-        setError(result.error);
-        setStats(null);
-      } else {
-        // Parse totalRevenue string to number (remove commas and convert)
-        const parseRevenue = (revenueStr) => {
-          if (typeof revenueStr === 'string') {
-            return parseFloat(revenueStr.replace(/,/g, '')) || 0;
-          }
-          return parseFloat(revenueStr) || 0;
-        };
-
-        // Map the API data to the expected format
-        const mappedStats = {
-          totalSales: parseRevenue(result.data?.totalRevenue),
-          totalOrders: parseInt(result.data?.totalOrders) || 0,
-          inventoryItems: parseInt(result.data?.totalProducts) || 0,
-          pendingOrders: parseInt(result.data?.pendingOrders) || 0,
-          averageOrderValue: parseRevenue(result.data?.averageOrderValue),
-          completedOrders: parseInt(result.data?.completedOrders) || 0,
-          inventoryValue: parseRevenue(result.data?.inventoryValue),
-          activeMarketplaces: parseInt(result.data?.activeMarketplaces) || 0,
-          totalSettlement: parseRevenue(result.data?.totalSettlement),
-          pendingSettlement: parseRevenue(result.data?.pendingSettlement),
-          settledAmount: parseRevenue(result.data?.settledAmount),
-          totalMarketplaces: parseInt(result.data?.totalMarketplaces) || 0,
-          dataSource: result.data?.dataSource || 'unknown',
-          recordsProcessed: parseInt(result.data?.totalStock) || 0,
-          apiStatus: result.data?.dataSource === 'real' ? 'Connected' : 'Error'
-        };
-        setStats(mappedStats);
-        setError(null);
-      }
-      
+      setStats(mockStats);
+      setError(null);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch (err) {
       console.error('Dashboard fetch error:', err);

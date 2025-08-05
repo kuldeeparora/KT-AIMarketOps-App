@@ -54,7 +54,7 @@ class AIService {
       throw new Error('Groq client not available');
     }
 
-    const messages: any[] = [];
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
     if (systemPrompt) {
       messages.push({ role: 'system', content: systemPrompt });
     }
@@ -129,7 +129,7 @@ class AIService {
   // Test connectivity
   async testConnection() {
     const providers = this.getAvailableProviders();
-    const results: any = { providers };
+    const results: Record<string, unknown> = { providers };
 
     for (const provider of providers) {
       try {

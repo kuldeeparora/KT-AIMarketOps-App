@@ -237,7 +237,7 @@ export default function SignInPage() {
               <Grid item xs={12}>
                 <Box textAlign="center">
                   <Typography variant="body2" color="text.secondary">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <Link href="/auth/signup">
                       Sign up
                     </Link>

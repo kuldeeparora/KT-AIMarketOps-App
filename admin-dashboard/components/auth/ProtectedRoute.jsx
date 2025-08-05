@@ -136,7 +136,7 @@ export default function ProtectedRoute({ children, requiredRole = null }) {
               Access Denied
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph>
-              You don't have permission to access this page.
+              You don&apos;t have permission to access this page.
             </Typography>
             <Button
               variant="contained"
