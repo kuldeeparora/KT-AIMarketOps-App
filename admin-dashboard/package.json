@@ -6,11 +6,13 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
+    "build:firebase": "cp next.config.firebase.js next.config.js && next build",
+    "build:vercel": "cp next.config.dev.js next.config.js && next build",
     "start": "next start -p 3001",
     "lint": "next lint",
     "export": "next build && next export",
-    "deploy:firebase": "npm run build && firebase deploy",
-    "deploy:firebase:hosting": "npm run build && firebase deploy --only hosting",
+    "deploy:firebase": "npm run build:firebase && firebase deploy",
+    "deploy:firebase:hosting": "npm run build:firebase && firebase deploy --only hosting",
     "firebase:init": "firebase init",
     "firebase:use": "firebase use kt-aimarketops"
   },
