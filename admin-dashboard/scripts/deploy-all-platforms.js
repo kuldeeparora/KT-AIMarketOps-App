@@ -150,7 +150,7 @@ async function deployToRender() {
 }
 
 async function deployToFirebase() {
-  log('\n🚀 Deploying to Firebase...', 'magenta');
+  log('\n🚀 Deploying to Firebase (KT-AIMarketOps-App)...', 'magenta');
   
   // Check if Firebase CLI is installed
   try {
@@ -202,7 +202,7 @@ module.exports = nextConfig;`;
       return false;
     }
     
-    log('✅ Firebase deployment completed!', 'green');
+    log('✅ Firebase deployment completed for KT-AIMarketOps-App!', 'green');
     return true;
     
   } finally {

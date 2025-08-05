@@ -10,13 +10,13 @@
   ],
   "scripts": {
     "dev": "cd admin-dashboard && npm run dev",
-    "build": "npm run build --workspaces",
+    "build": "cd admin-dashboard && npm run build",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
     "clean": "npm run clean --workspaces",
-    "deploy": "firebase deploy",
-    "deploy:functions": "firebase deploy --only functions",
-    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel",
+    "deploy:vercel": "node scripts/deploy-vercel.js",
     "setup": "npm install && npm run build",
     "start": "cd admin-dashboard && npm start"
   },
