@@ -44,4 +44,5 @@ jobs:
         repoToken: '${{ secrets.GITHUB_TOKEN }}'
         firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
         projectId: kent-traders-admin
-        channelId: live 
+        channelId: live
+        entryPoint: './admin-dashboard' 

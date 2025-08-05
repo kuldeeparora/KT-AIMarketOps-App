@@ -4,10 +4,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // For development and Vercel deployment (with API routes)
-  output: 'standalone',
+  // For Firebase static hosting
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  },
   experimental: {
-    outputFileTracingRoot: undefined,
+    appDir: false
   }
 };
 
