@@ -29,7 +29,7 @@ jobs:
     - name: Build application
       run: |
         cd admin-dashboard
-        npm run build
+        npm run build:firebase
       env:
         NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
         NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
@@ -43,5 +43,5 @@ jobs:
       with:
         repoToken: '${{ secrets.GITHUB_TOKEN }}'
         firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-        projectId: kt-aimarketops
+        projectId: kent-traders-admin
         channelId: live 

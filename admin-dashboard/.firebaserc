@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "kt-aimarketops",
-    "production": "kt-aimarketops",
-    "staging": "kt-aimarketops-staging"
+    "default": "kent-traders-admin",
+    "production": "kent-traders-admin",
+    "staging": "kent-traders-admin-staging"
   }
 }
