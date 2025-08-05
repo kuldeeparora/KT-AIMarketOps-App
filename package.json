@@ -21,6 +21,7 @@
     "deploy:production": "node scripts/deploy-production.js all",
     "deploy:vercel:prod": "node scripts/deploy-production.js vercel",
     "deploy:firebase:prod": "node scripts/deploy-production.js firebase",
+    "fix:deployment": "node scripts/fix-deployment-issues.js",
     "setup": "npm install && npm run build",
     "start": "cd admin-dashboard && npm start"
   },
@@ -42,7 +43,7 @@
     "prettier": "^3.0.0"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=9.0.0"
   }
 }
